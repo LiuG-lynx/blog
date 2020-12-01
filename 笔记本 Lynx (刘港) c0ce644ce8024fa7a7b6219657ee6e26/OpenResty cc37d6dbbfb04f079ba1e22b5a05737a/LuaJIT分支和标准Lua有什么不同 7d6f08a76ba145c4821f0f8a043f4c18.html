@@ -1,0 +1,677 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>LuaJIT分支和标准Lua有什么不同</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+.select-value-color-default { background-color: rgba(206,205,202,0.5); }
+.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
+.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
+.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
+.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
+.select-value-color-green { background-color: rgba(0,135,107,0.2); }
+.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
+.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
+.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
+.select-value-color-red { background-color: rgba(255,0,26,0.2); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="7d6f08a7-6ba1-45c4-821f-0f8a043f4c18" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/gradients_3.png" style="object-position:center 60%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">🏋</span></div><h1 class="page-title">LuaJIT分支和标准Lua有什么不同</h1></header><div class="page-body"><p id="82ebf7d0-7d35-4e2e-8c26-95361aea0e5f" class="">OpenResty 的 worker 进程都是 fork master 进程而得到的， 其实， master 进程中的 LuaJIT 虚拟机也会一起 fork 过来。在同一个 worker 内的所有协程，都会共享这个 LuaJIT 虚拟机，Lua 代码的执行也是在这个虚拟机中完成的。</p><figure id="725290eb-3288-4fa0-865e-a8550618227f" class="image"><a href="LuaJIT%E5%88%86%E6%94%AF%E5%92%8C%E6%A0%87%E5%87%86Lua%E6%9C%89%E4%BB%80%E4%B9%88%E4%B8%8D%E5%90%8C%207d6f08a76ba145c4821f0f8a043f4c18/Untitled.png"><img style="width:1180px" src="LuaJIT%E5%88%86%E6%94%AF%E5%92%8C%E6%A0%87%E5%87%86Lua%E6%9C%89%E4%BB%80%E4%B9%88%E4%B8%8D%E5%90%8C%207d6f08a76ba145c4821f0f8a043f4c18/Untitled.png"/></a></figure><h2 id="90b3d523-c218-46ea-b6ff-50e227daad42" class="">Lua 和 LuaJIT 的关系</h2><p id="4c6e456c-7bdc-4c44-acbc-cd6ddf11d4cb" class="">标准 Lua 和 LuaJIT 是两回事儿，LuaJIT 只是兼容了 Lua 5.1 的语法。</p><p id="b6302295-3071-4fba-b5e8-560d1b52f361" class="">标准 Lua 现在的最新版本是 5.3，LuaJIT 的最新版本则是 2.1.0-beta3。在 OpenResty 几年前的老版本中，编译的时候，你可以选择使用标准 Lua VM ，或者 LuaJIT VM 来作为执行环境，不过，现在已经去掉了对标准 Lua 的支持，只支持 LuaJIT。</p><p id="0333a7f4-36b9-45db-8241-eae1cd625845" class="">OpenResty 并没有直接使用 LuaJIT 官方提供的 2.1.0-beta3 版本，而是在此基础上，扩展了自己的 fork: [openresty-luajit2]：</p><blockquote id="da1e40d5-3f19-4f88-8b16-0276bc3794b6" class="">OpenResty 维护了自己的 LuaJIT 分支，并扩展了很多独有的 API。</blockquote><p id="7b9464bd-6f48-409a-ad6a-afa06a8f18bf" class=""><strong>为什么选择 LuaJIT</strong></p><p id="a8186ee0-5f26-4fde-86fa-33449eb7b1ef" class="">标准 Lua 出于性能考虑，也内置了虚拟机，所以 Lua 代码并不是直接被解释执行的，而是先由 Lua 编译器编译为字节码（Byte Code），然后再由 Lua 虚拟机执行。</p><p id="a72fb531-84f1-4e6a-993f-3803bbf183ef" class="">LuaJIT 的运行时环境，除了一个汇编实现的 Lua 解释器外，还有一个可以直接生成机器代码的 JIT 编译器。开始的时候，LuaJIT 和标准 Lua 一样，Lua 代码被编译为字节码，字节码被 LuaJIT 的解释器解释执行。</p><p id="e2768885-a6dc-4e8a-a34e-20a39124fe20" class="">但不同的是，LuaJIT 的解释器会在执行字节码的同时，记录一些运行时的统计信息，比如每个 Lua 函数调用入口的实际运行次数，还有每个 Lua 循环的实际执行次数。当这些次数超过某个随机的阈值时，便认为对应的 Lua 函数入口或者对应的 Lua 循环足够热，这时便会触发 JIT 编译器开始工作。</p><blockquote id="33599bb9-ea84-41e2-b620-c89dfef85793" class="">这里的字节码是 LuaJIT 虚拟机执行的一种指令格式；机器码是指 CPU 可以读取的指令格式。</blockquote><p id="2806b097-eaba-4212-9827-7449caab47b2" class="">JIT 编译器会从热函数的入口或者热循环的某个位置开始，尝试编译对应的 Lua 代码路径。编译的过程，是把 LuaJIT 字节码先转换成 LuaJIT 自己定义的中间码（IR），然后再生成针对目标体系结构的机器码。</p><p id="21d3f86f-7dc8-4ec1-86c1-e6bd716e2226" class=""><strong>所谓 LuaJIT 的性能优化，本质上就是让尽可能多的 Lua 代码可以被 JIT 编译器生成机器码，而不是回退到 Lua 解释器的解释执行模式。</strong></p><p id="1097a0b2-4f5e-418c-a75b-3869d8ae88e1" class="">
+</p><h2 id="47865f31-bb21-4cc9-949b-35b1bba25cbd" class="">Lua 特别之处</h2><h3 id="f0d50b4c-775d-4607-8534-52f2924cff38" class="">Lua 下标从1 开始</h3><p id="88c8686f-b4cd-494c-9182-d6f08cff64b8" class="">下面是一个例子：</p><pre id="dcd8d9b1-5f0c-4364-bd97-2ecb8f49e0d7" class="code"><code>$ resty -e &#x27;t={100}; ngx.say(t[0])&#x27;
+复制代码
+</code></pre><p id="fadf686b-86d4-4974-8220-86b7de673c2c" class="">你自然期望打印出 <code>100</code>，或者报错说下标 0 不存在。但结果出乎意料，什么都没有打印出来，也没有报错。既然如此，让我们加上 <code>type</code> 命令，来看下输出到底是什么：</p><pre id="fe5b67c5-8cc2-43b0-8e0c-be6d8f7dde0d" class="code"><code>$ resty -e &#x27;t={100};ngx.say(type(t[0]))&#x27;
+nil
+复制代码
+</code></pre><p id="64500a56-4501-40cf-9716-f1158a0ef738" class="">原来是空值。事实上，在 OpenResty 中，对于空值的判断和处理也是一个容易让人迷惑的点</p><p id="79d354dc-0761-419e-a147-8b30db3c4488" class="">
+</p><h3 id="192a22d6-b4a8-45d5-b80c-b5f8cffc7e75" class=""><strong>使用 </strong><code><strong>..</strong></code><strong> 来拼接字符串</strong></h3><p id="9e7df184-39ad-480d-9a5e-7de0df55f57b" class="">这一点，上节课我也提到过。和大部分语言使用 <code>+</code> 不同，Lua 中使用两个点号来拼接字符串：</p><pre id="78b870c5-3ad4-48d8-86c2-9a869fd6284c" class="code"><code>$ resty -e &quot;ngx.say(&#x27;hello&#x27; .. &#x27;, world&#x27;)&quot;
+hello, world
+复制代码
+</code></pre><p id="5c482041-b961-4b33-a1db-c73f2b5341c5" class="">在实际的项目开发中，我们一般都会使用多种开发语言，而 Lua 这种不走寻常路的设计，总是会让开发者的思维，在字符串拼接的时候卡顿一下，也是让人哭笑不得。</p><p id="c266b4e2-57b4-4bf9-a3ab-e1e07fb9ddfd" class="">
+</p><h3 id="f72eb893-71dc-47fa-9ffe-1b17eef50f89" class=""><strong>3. 只有 </strong><code><strong>table</strong></code><strong> 这一种数据结构</strong></h3><p id="4329c7f3-32dc-4983-becb-fd0ee3bda99b" class="">不同于 Python 这种内置数据结构丰富的语言，Lua 中只有一种数据结构，那就是 table，它里面可以包括数组和哈希表：</p><pre id="b3e5ed6e-28b1-45b4-8a93-df14227561e5" class="code"><code>local color = {first = &quot;red&quot;, &quot;blue&quot;, third = &quot;green&quot;, &quot;yellow&quot;}
+print(color[&quot;first&quot;])                 --&gt; output: red
+print(color[1])                         --&gt; output: blue
+print(color[&quot;third&quot;])                --&gt; output: green
+print(color[2])                         --&gt; output: yellow
+print(color[3])                         --&gt; output: nil
+复制代码
+</code></pre><p id="453fffd1-747d-42ec-a631-a731ea6396fb" class="">如果不显式地用<code>_键值对_</code>的方式赋值，table 就会默认用数字作为下标，从 1 开始。所以 <code>color[1]</code> 就是 blue。</p><p id="dccb0add-bce1-4d04-8cd9-6b5a2e7b1e2c" class="">另外，想在 table 中获取到正确长度，也是一件不容易的事情，我们来看下面这些例子：</p><pre id="51bff9ad-5e3b-4553-ae9e-e5dee70669d2" class="code"><code>local t1 = { 1, 2, 3 }
+print(&quot;Test1 &quot; .. table.getn(t1))
+
+local t2 = { 1, a = 2, 3 }
+print(&quot;Test2 &quot; .. table.getn(t2))
+
+local t3 = { 1, nil }
+print(&quot;Test3 &quot; .. table.getn(t3))
+
+local t4 = { 1, nil, 2 }
+print(&quot;Test4 &quot; .. table.getn(t4))
+复制代码
+</code></pre><p id="10727965-0942-43c2-8da5-b0c88649c75a" class="">使用 <code>resty</code> 运行的结果如下：</p><pre id="d5157128-d42b-47bc-94e6-53a6cce5362c" class="code"><code>Test1 3
+Test2 2
+Test3 1
+Test4 1
+复制代码
+</code></pre><p id="1caf48a2-5f90-48ae-85ed-fedf21048045" class="">你可以看到，除了第一个返回长度为 3 的测试案例外，后面的测试都是我们预期之外的结果。事实上，想要在 Lua 中获取 table 长度，必须注意到，只有在 table 是 <code>_序列_</code> 的时候，才能返回正确的值。</p><p id="1eb38835-41b1-430a-bca2-5678f4c5b7c8" class="">那什么是序列呢？首先序列是数组（array）的子集，也就是说，table 中的元素都可以用正整数下标访问到，不存在键值对的情况。对应到上面的代码中，除了 t2 外，其他的 table 都是 array。</p><p id="f70adfb6-e598-4ae4-a2dd-632fb514ea85" class="">其次，序列中不包含空洞（hole），即 nil。综合这两点来看，上面的 table 中， t1 是一个序列，而 t3 和 t4 是 array，却不是序列（sequence）。</p><p id="d9bc20ce-45aa-4d08-b61b-8b5575a559cc" class="">到这里，你可能还有一个疑问，为什么 t4 的长度会是 1 呢？其实这是因为，在遇到 nil 时，获取长度的逻辑就不继续往下运行，而是直接返回了。</p><h3 id="741d854b-a13a-4905-9786-ce30604cf717" class=""><strong>4. 默认是全局变量</strong></h3><p id="d33dc75e-9706-45b3-9a29-a24319612f27" class="">我想先强调一点，除非你相当确定，否则在 Lua 中声明变量时，前面都要加上 <code>local</code>：</p><pre id="fd1ee9cc-b3c5-400a-98bc-26f75f079bf5" class="code"><code>local s = &#x27;hello&#x27;
+复制代码
+</code></pre><p id="3f8ce307-711c-4ef3-8d2e-30ff9868c4c7" class="">这是因为在 Lua 中，变量默认是全局的，会被放到名为 <code>_G</code> 的 table 中。不加 local 的变量会在全局表中查找，这是昂贵的操作。如果再加上一些变量名的拼写错误，就会造成难以定位的 bug。</p><p id="cd677e5f-2f92-41cb-be1c-3b87c6c1d642" class="">所以，在 OpenResty 编程中，我强烈建议你总是使用 <code>local</code> 来声明变量，即使在 require module 的时候也是一样：</p><pre id="fd6fab56-8c4b-4afd-9167-8a4e54bd3684" class="code"><code>-- Recommended
+local xxx = require(&#x27;xxx&#x27;)
+
+-- Avoid
+require(&#x27;xxx&#x27;)
+</code></pre><p id="e7e18243-3f53-4acb-a61a-8289b9e2f995" class="">
+</p><h2 id="a6ffcad0-dfd7-45fb-a034-9cc0aa2afd0e" class=""><strong>LuaJIT</strong></h2><p id="8425c0d9-cda5-4c6b-ab4d-bdfc42565c18" class="">明白了 Lua 这四点特别之处，我们继续来说 LuaJIT。除了兼容 Lua 5.1 的语法并支持 JIT 外，LuaJIT 还紧密结合了 FFI（Foreign Function Interface），可以让你直接在 Lua 代码中调用外部的 C 函数和使用 C 的数据结构。</p><p id="140dab87-9ee2-49ca-9da8-1139b6372366" class="">下面是一个最简单的例子：</p><pre id="6cd9e40f-5f8f-49b6-93fc-01be21a6f4bb" class="code"><code>local ffi = require(&quot;ffi&quot;)
+ffi.cdef[[
+int printf(const char *fmt, ...);
+]]
+ffi.C.printf(&quot;Hello %s!&quot;, &quot;world&quot;)
+复制代码
+</code></pre><p id="f822691e-e05e-4ec0-a712-0d0c22b0d210" class="">短短这几行代码，就可以直接在 Lua 中调用 C 的 <code>printf</code> 函数，打印出 <code>Hello world!</code>。你可以使用 <code>resty</code> 命令来运行它，看下是否成功。</p><p id="0da0f1a5-6d45-44e7-a2a6-ec6ee3b4b708" class="">类似的，我们可以用 FFI 来调用 NGINX、OpenSSL 的 C 函数，来完成更多的功能。实际上，FFI 方式比传统的 Lua/C API 方式的性能更优，这也是 <code>lua-resty-core</code> 项目存在的意义。</p><p id="eba92e5d-4870-4447-88d9-47f841318fbd" class="">出于性能方面的考虑，LuaJIT 还扩展了 table 的相关函数：table.new 和 table.clear。这是两个在性能优化方面非常重要的函数，在 OpenResty 的 lua-resty 库中会被频繁使用。不过，由于相关文档藏得非常深，而且没有示例代码，所以熟悉它们的开发者并不多。我们留到性能优化章节专门来讲它们。</p><p id="fb0d9ae7-64ae-421d-a64a-fa9bdc2da394" class="">
+</p></div></article></body></html>

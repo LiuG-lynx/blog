@@ -1,0 +1,632 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>数据变换</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+.select-value-color-default { background-color: rgba(206,205,202,0.5); }
+.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
+.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
+.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
+.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
+.select-value-color-green { background-color: rgba(0,135,107,0.2); }
+.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
+.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
+.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
+.select-value-color-red { background-color: rgba(255,0,26,0.2); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="ecd09a05-5fec-41b1-a81f-1f80cd3230ac" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/solid_yellow.png" style="object-position:center 40%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">🏳️‍🌈</span></div><h1 class="page-title">数据变换</h1></header><div class="page-body"><h2 id="c7c8ab7e-e017-4064-bd0b-e37a4383f476" class="">正态分布(常态分布)</h2><p id="e2e74c0e-e912-4557-ad80-29e956c5bd4b" class="">在正态分布中的学生成绩例子中. 大部分学生的成绩 集中在中间的区域</p><p id="01c44aaf-fb0c-4cd3-aeda-ee9b77d519c5" class="">为了让成绩符合正态分布，出题老师是怎么做的呢？他们通常可以把考题分成三类：</p><p id="a14abdcb-4d3b-4e3c-9849-87ce36e70612" class="">第一类：基础题，占总分70%，基本上属于送分题；</p><p id="a176ee89-cd2b-4a32-9e3e-89111dd9f8e4" class="">第二类：灵活题，基础范围内+一定的灵活性，占20%；</p><p id="d574fac8-f16c-4108-84b1-44fcc43e4128" class="">第三类：难题，涉及知识面较广的难题，占10%；</p><h3 id="f0ee4c0b-e2f3-420f-a0b2-c847431de758" class="">数据变换 数据准备前的重要环节</h3><ol id="38fca6eb-e962-4063-89e9-c8dc5d210fcc" class="numbered-list" start="1"><li><strong>数据平滑</strong>：去除数据中的噪声，将连续数据离散化。这里可以采用分箱、聚类和回归的方式进行数据平滑，我会在后面给你讲解聚类和回归这两个算法；</li></ol><ol id="ec614cf9-ddf4-4452-9ad0-d709e953fa06" class="numbered-list" start="2"><li><strong>数据聚集</strong>：对数据进行汇总，在SQL中有一些聚集函数可以供我们操作，比如Max()反馈某个字段的数值最大值，Sum()返回某个字段的数值总和；</li></ol><ol id="4ecf149d-6f9e-436f-92b8-6ff769d6848b" class="numbered-list" start="3"><li><strong>数据概化</strong>：将数据由较低的概念抽象成为较高的概念，减少数据复杂度，即用更高的概念替代更低的概念。比如说上海、杭州、深圳、北京可以概化为中国。</li></ol><ol id="6ac28c79-f981-4407-971a-19be259f7bbd" class="numbered-list" start="4"><li><strong>数据规范化</strong>：使属性数据按比例缩放，这样就将原来的数值映射到一个新的特定区域中。常用的方法有最小—最大规范化、Z—score 规范化、按小数定标规范化等，我会在后面给你讲到这些方法的使用；</li></ol><ol id="397ef069-dc4a-43d2-98bb-af1bf58a4897" class="numbered-list" start="5"><li><strong>属性构造</strong>：构造出新的属性并添加到属性集中。这里会用到特征工程的知识，因为通过属性与属性的连接构造新的属性，其实就是特征工程。比如说，数据表中统计每个人的英语、语文和数学成绩，你可以构造一个“总和”这个属性，来作为新属性。这样“总和”这个属性就可以用到后续的数据挖掘计算中。</li></ol><h3 id="69961b83-8988-4c75-9ab3-b56432fd5bbe" class="">数据规范化的几种方法</h3><p id="1bb768e6-2ff5-4af3-ae03-6d892ef1185a" class=""><strong>1. Min-max 规范化</strong></p><p id="1eab5096-83c8-4a5f-a8ad-a7ba9174d1ca" class="">Min-max标准化方法是将原始数据变换到[0,1]的空间中。用公式表示就是：</p><p id="e2b94f35-5824-4721-a929-641042043824" class="">新数值=（原数值-极小值）/（极大值-极小值）。</p><p id="138c3946-6684-4ec4-b31c-0fa378197a3a" class=""><strong>2. Z-Score 规范化</strong></p><p id="7bcc7648-6df5-46ea-94c3-4aac4e5bb853" class="">假设A与B的考试成绩都为80分，A的考卷满分是100分（及格60分），B的考卷满分是500分（及格300分）。虽然两个人都考了80分，但是A的80分与B的80分代表完全不同的含义。</p><p id="ca594819-79d1-4ced-8af2-9fb7c14bd18f" class="">那么如何用相同的标准来比较A与B的成绩呢？Z-Score就是用来可以解决这一问题的。</p><p id="3c3f6726-fdcd-4b52-a854-a0eea187c64c" class="">我们定义：新数值=（原数值-均值）/ 标准差。</p><p id="ac8941aa-8cb8-44a9-b921-35cd6c61f331" class="">假设A所在的班级平均分为80，标准差为10。B所在的班级平均分为400，标准差为100。那么A的新数值=(80-80)/10=0，B的新数值=(80-400)/100=-3.2。</p><p id="3480633f-5877-4de3-997d-c52e9058fe78" class="">那么在Z-Score标准下，A的成绩会比B的成绩好。</p><p id="29313e0d-608e-49a9-af1a-f03b8546c29a" class="">我们能看到Z-Score的优点是算法简单，不受数据量级影响，结果易于比较。不足在于，它需要数据整体的平均值和方差，而且结果没有实际意义，只是用于比较。</p><p id="5a620328-31c5-4e57-a69d-3f0e24597b4f" class="">另一种计算非线性Z分的方式：1、先按该公式计算出百级等级分：百分等级分数（年级）=100﹣（100×年级名次-50）÷年级有效参考总人数；该百级等级分便是每个学生在该批学生的相对位置，其百分等级分数对应便是标准正态分布图的所占面积比例2、再按该百分等级数去标准正态分布表里去查出Z-Score ，这样最终得出的Z分便是标准的正态分布，能将偏态转化成标准正态，这样就能比较同一学生的各次考试</p><p id="8d021e27-0ce9-4bcc-aff0-e461bdaa9930" class=""><strong>3.小数定标规范化</strong></p><p id="532b0582-c527-477c-8489-7dd228270ba9" class="">小数定标规范化就是通过移动小数点的位置来进行规范化。小数点移动多少位取决于属性A的取值中的最大绝对值。</p><p id="9b67e7cd-1723-4532-a0fc-d6ec8f1ff100" class="">举个例子，比如属性A的取值范围是-999到88，那么最大绝对值为999，小数点就会移动3位，即新数值=原数值/1000。那么A的取值范围就被规范化为-0.999到0.088。</p><p id="9f9670e2-cd1a-48b5-b56f-1471349f1963" class="">上面这三种是数值规范化中常用的几种方式。</p><h2 id="5b831ed8-19ba-45ce-b818-3d98bb95e855" class="">Python 的Scokit-Learn 库的使用</h2><p id="6cfcb768-7adb-4cce-9936-d488fc902c36" class="">
+</p><p id="350af4a2-fe78-4edf-96eb-0de2ba7a8345" class="">SciKit-Learn是Python的重要机器学习库，它帮我们封装了大量的机器学习算法，比如分类、聚类、回归、降维等。此外，它还包括了数据变换模块。</p><p id="85650f7c-dedc-40e7-8a61-65a25eb7c3a4" class="">我现在来讲下如何使用SciKit-Learn进行数据规范化。</p><p id="017e05a9-ff62-410b-8ead-731e734d8602" class=""><strong>1. Min-max 规范化</strong></p><p id="d028e13d-7925-4fa0-86e0-14b512ea17b6" class="">我们可以让原始数据投射到指定的空间[min, max]，在SciKit-Learn里有个函数MinMaxScaler是专门做这个的，它允许我们给定一个最大值与最小值，然后将原数据投射到[min, max]中。默认情况下[min,max]是[0,1]，也就是把原始数据投放到[0,1]范围内。</p><p id="60eb303d-45ed-4573-b495-37e5c2fabdba" class="">
+</p><figure id="d43ee110-954b-4879-82fb-5c1fda4d0a91" class="image"><a href="%E6%95%B0%E6%8D%AE%E5%8F%98%E6%8D%A2%20ecd09a055fec41b1a81f1f80cd3230ac/Untitled.png"><img style="width:889px" src="%E6%95%B0%E6%8D%AE%E5%8F%98%E6%8D%A2%20ecd09a055fec41b1a81f1f80cd3230ac/Untitled.png"/></a></figure><p id="824b7f3b-1e50-4a67-8748-e8a8ed41b942" class="">
+</p><p id="45a59dbe-4d68-41ec-abb4-da3192f05ca0" class=""><strong>2. Z-Score规范化</strong></p><p id="62fab619-c3aa-4255-8fb2-4ddddba6ef39" class="">在SciKit-Learn库中使用preprocessing.scale()函数，可以直接将给定数据进行Z-Score规范化。</p><figure id="1b655c88-bb52-4c69-8c5d-ec67bf1c1400" class="image"><a href="%E6%95%B0%E6%8D%AE%E5%8F%98%E6%8D%A2%20ecd09a055fec41b1a81f1f80cd3230ac/Untitled%201.png"><img style="width:816px" src="%E6%95%B0%E6%8D%AE%E5%8F%98%E6%8D%A2%20ecd09a055fec41b1a81f1f80cd3230ac/Untitled%201.png"/></a></figure><p id="05636231-713c-4ee8-b1a9-67fec20150fd" class="">数值都符合均值为0，方差为1的正态分布。</p><p id="6542328e-b022-427f-94d2-7a6f7c5cd1cf" class=""><strong>3. 小数定标规范化</strong></p><p id="e65ee3ac-c2cc-4528-94fa-141be634f990" class="">我们需要用NumPy库来计算小数点的位数。NumPy库我们之前提到过。</p><p id="a7c07ff6-81f5-44f5-8f60-276314c46eb8" class="">
+</p><figure id="0d289bfe-779e-4dc3-97fc-39ea56aaf72a" class="image"><a href="%E6%95%B0%E6%8D%AE%E5%8F%98%E6%8D%A2%20ecd09a055fec41b1a81f1f80cd3230ac/Untitled%202.png"><img style="width:616px" src="%E6%95%B0%E6%8D%AE%E5%8F%98%E6%8D%A2%20ecd09a055fec41b1a81f1f80cd3230ac/Untitled%202.png"/></a></figure><p id="f033655a-df1d-4d88-878c-8ee066f7bfcc" class="">
+</p><figure id="073ec130-5162-4bc5-a64d-0b8133ae3ba1" class="image"><a href="%E6%95%B0%E6%8D%AE%E5%8F%98%E6%8D%A2%20ecd09a055fec41b1a81f1f80cd3230ac/Untitled%203.png"><img style="width:2884px" src="%E6%95%B0%E6%8D%AE%E5%8F%98%E6%8D%A2%20ecd09a055fec41b1a81f1f80cd3230ac/Untitled%203.png"/></a></figure></div></article></body></html>

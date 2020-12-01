@@ -1,0 +1,663 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>JIT编译器的死穴：为什么要避免使用 NYI ？</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+.select-value-color-default { background-color: rgba(206,205,202,0.5); }
+.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
+.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
+.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
+.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
+.select-value-color-green { background-color: rgba(0,135,107,0.2); }
+.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
+.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
+.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
+.select-value-color-red { background-color: rgba(255,0,26,0.2); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="6b52d430-6566-492e-b447-40b6e061422e" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/nasa_wrights_first_flight.jpg" style="object-position:center 40%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">🎇</span></div><h1 class="page-title">JIT编译器的死穴：为什么要避免使用 NYI ？</h1></header><div class="page-body"><p id="1739633f-f57d-4bcb-b109-9859fa45f4c7" class="">你可以很快使用 OpenResty 写出逻辑正确的代码，但不明白 NYI，你就不能写出高效的代码，无法发挥 OpenResty 真正的威力。这两者的性能差距，至少是一个数量级的。</p><h2 id="94b33912-0285-4c25-86b8-6c5d99a947fd" class="">什么是NYI(Not Yet Implemented)</h2><p id="30c0f677-9916-4f5a-93f4-a68250d2e1a0" class=""><strong>LuaJIT 的运行时环境，除了一个汇编实现的 Lua 解释器外，还有一个可以直接生成机器代码的 JIT 编译器。</strong></p><p id="348f068b-dd57-4bb1-82a8-83799b68e544" class="">LuaJIT 官网上的 NYI 完整列表</p><figure id="9e26018e-93b0-4f69-bca7-e8421f90f5d3"><a href="http://wiki.luajit.org/NYI" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">Not Yet Implemented</div><div class="bookmark-description">All aspects of Lua are implemented in LuaJIT&#x27;s interpreter, but not all of them are implemented in LuaJIT&#x27;s JIT compiler. This page serves as a quick reference to identify whether certain things are implemented or not. Hopefully meaning that you can avoid them in performance-critical code rather than puzzle over why you&#x27;re seeing poorly performing code and NYI messages from -jv.</div></div><div class="bookmark-href">http://wiki.luajit.org/NYI</div></div></a></figure><figure id="23ce9d89-33b3-4bd1-87e3-492cfb86a580" class="image"><a href="JIT%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E6%AD%BB%E7%A9%B4%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E9%81%BF%E5%85%8D%E4%BD%BF%E7%94%A8%20NYI%20%EF%BC%9F%206b52d4306566492eb44740b6e061422e/Untitled.png"><img style="width:1020px" src="JIT%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E6%AD%BB%E7%A9%B4%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E9%81%BF%E5%85%8D%E4%BD%BF%E7%94%A8%20NYI%20%EF%BC%9F%206b52d4306566492eb44740b6e061422e/Untitled.png"/></a></figure><p id="0b20e019-c43f-402b-82a3-81f45865a122" class="">string 库中的函数</p><p id="ac797563-fcf3-48e3-902b-5e61ae225f32" class="">其中 <code>string.byte</code> 对应的能否被编译状态是 <code>yes</code>  代表可以被 JIT ,可以正常直接使用</p><p id="64f71f84-cc96-4db0-aabf-4dd59525eddf" class=""><code>string.char</code> 对应的编译状态是 <code>2.1</code>，表明从 LuaJIT 2.1 开始支持。我们知道，OpenResty 中的 LuaJIT 是基于 LuaJIT 2.1 的，所以你也可以放心使用。</p><p id="b22b24b1-9c0f-4868-a63d-1146304a661b" class=""><code>string.dump</code> 对应的编译状态是 <code>never</code>，即不会被 JIT，会退回到解释器模式。目前来看，未来也没有计划支持这个原语。</p><p id="d15a28b0-82b8-4499-9544-f84b94fab49e" class=""><code>string.find</code> 对应的编译状态是 <code>2.1 partial</code>，意思是从 LuaJIT 2.1 开始部分支持，后面的备注中写的是 <code>只支持搜索固定的字符串，不支持模式匹配</code>。所以对于固定字符串的查找，你使用 <code>string.find</code> 是可以被 JIT 的。</p><h2 id="8ff9eb64-91d6-4240-bb5e-b999e55da0c8" class=""><strong>NYI 的替代方案</strong></h2><p id="134fcf5a-e8d9-4607-ace5-94d0c46149de" class="">其实，不用担心，大部分 NYI 函数我们都可以敬而远之，通过其他方式来实现它们的功能。接下来，我挑选了几个典型的 NYI 来讲解，带你了解不同类型的 NYI 替代方案。这样，其他的 NYI 你也可以自己触类旁通。</p><h3 id="6307a7a7-be9f-4ffc-a19c-87db18690114" class=""><strong>1.string.gsub() 函数</strong></h3><p id="2c95f8ea-fdfc-44fb-90d4-f00ecc1db184" class="">第一个我们来看 string.gsub() 函数。它是 Lua 内置的字符串操作函数，作用是做全局的字符串替换，比如下面这个例子：</p><pre id="f899f809-2b85-4994-94a7-6f7bd4fa4031" class="code"><code>$ resty -e &#x27;local new = string.gsub(&quot;banana&quot;, &quot;a&quot;, &quot;A&quot;); print(new)&#x27;
+bAnAnA
+</code></pre><p id="c3985c0b-3449-4d91-a2ff-819cb634efc5" class="">这个函数是一个 NYI 原语，无法被 JIT 编译。</p><p id="593781b5-c3d5-4b75-bf91-f50bb3a97306" class="">我们可以尝试在 OpenResty 自己的 API 中寻找替代函数，但对于大多数人来说，记住所有的 API 和用法是不现实的。所以在平时开发中，我都会打开 lua-nginx-module 的 <a href="https://github.com/openresty/lua-nginx-module">GitHub 文档页面</a>。</p><p id="27e0fe95-efc6-4258-ae5c-679baee66c80" class="">比如，针对刚刚的这个例子，我们可以用 <code>gsub</code> 作为关键字，在文档页面中搜索，这时<code>ngx.re.gsub</code> 就会映入眼帘。</p><p id="bfb793fd-b268-4a50-b2a7-46702f420742" class="">细心的同学可能会问，这里为什么不用之前推荐的 <code>restydoc</code> 工具，来搜索 OpenResty API 呢？你可以尝试下用它来搜索 <code>gsub</code>：</p><pre id="c7394ccb-a0a5-4ccd-8097-5d4705220399" class="code"><code>$ restydoc -s gsub</code></pre><p id="7058ab88-e4d1-48a3-934a-4c78c6cd365e" class="">看到了吧，这里并没有返回我们期望的 <code>ngx.re.gsub</code>，而是显示了 Lua 自带的函数。事实上，现阶段而言， <code>restydoc</code> 返回的是唯一的精准匹配的结果，所以它更适合在你明确知道 API 名字的前提下使用。至于模糊的搜索，还是要自己手动在文档中进行。</p><p id="2e9a920b-a8b8-460e-8d08-c285488919d7" class="">回到刚刚的搜索结果，我们看到，<code>ngx.re.gsub</code> 的函数定义如下：</p><blockquote id="ac880333-03cb-4f01-9c02-f7740d02dd23" class="">newstr, n, err = ngx.re.gsub(subject, regex, replace, options?)</blockquote><p id="090e0bef-367d-4256-9526-94e805118811" class="">这里，函数参数和返回值的命名都带有具体的含义。其实，在 OpenResty 中，我并不推荐你写很多注释，大多数时候，一个好的命名胜过好几行注释。</p><p id="ab28f636-e603-4c90-bc0a-789642622b66" class="">对于不熟悉 OpenResty 正则体系的工程师而言，看到最后的变参 <code>options</code> ，你可能会比较困惑。不过，这个变参的解释，并不在此函数中，而是在 <code>ngx.re.match</code> 函数的文档中。</p><p id="c552dc0e-27ee-4e4f-bce1-ed235601e98a" class="">通过查看参数 <code>options</code> 的文档，你会发现，只要我们把它设置为 <code>jo</code>，就开启了 PCRE 的 JIT。这样，使用 <code>ngx.re.gsub</code> 的代码，既可以被 LuaJIT 进行 JIT 编译，也可以被 PCRE JIT 进行 JIT 编译。</p><p id="4e762dcf-4620-4b69-9735-309128baa31e" class="">具体的文档内容，我就不再赘述了。不过这里我想强调一点——在翻看文档时，我们一定要有打破砂锅问到底的精神。OpenResty 的文档其实非常完善，仔细阅读文档，就可以解决你大部分的问题。</p><h3 id="77385b7c-3b8e-4f4e-ae6f-60ff17af8254" class=""><strong>2.string.find() 函数</strong></h3><p id="50b50dfc-7899-4837-81b9-fef286451230" class="">和 <code>string.gsub</code> 不同的是，<code>string.find</code> 在 plain 模式（即固定字符串的查找）下，是可以被 JIT 的；而带有正则这种的字符串查找，<code>string.find</code> 并不能被 JIT ，这时就要换用 OpenResty 自己的 API，也就是 <code>ngx.re.find</code> 来完成。</p><p id="09e0c3fd-44d7-4531-b46c-1f747352eb93" class="">所以，当你在 OpenResty 中做字符串查找时，首先一定要明确区分，你要查找的是固定的字符串，还是正则表达式。如果是前者，就要用 <code>string.find</code>，并且记得把最后的 plain 设置为 true：</p><pre id="f005e270-4739-4bbd-8c14-68dfb5efe063" class="code"><code>string.find(&quot;foo bar&quot;, &quot;foo&quot;, 1, true)
+</code></pre><p id="cefd23b4-3918-43b8-bb3d-334606f90d5f" class="">如果是后者，你应该用 OpenResty 自己的 API，并开启 PCRE 的 JIT 选项：</p><pre id="b90886f5-bbfe-426e-9116-8eeae7865c7d" class="code"><code>ngx.re.find(&quot;foo bar&quot;, &quot;^foo&quot;, &quot;jo&quot;)
+</code></pre><p id="887fd9ef-2981-4405-b84a-1340094b6dbb" class="">其实，<strong>这里更适合做一层封装，并把优化选项默认打开，不要让最终的使用者知道这么多细节</strong>。这样，对外就是统一的字符串查找函数了。你可以感受到，有时候选择太多、太灵活并不是一件好事。</p><h3 id="03a8d884-1512-4cc0-8f5e-aaf5e98d50d3" class=""><strong>3.unpack() 函数</strong></h3><p id="fac4c33b-165d-43db-af7a-6769fd2ee669" class="">第三个我们来看 unpack() 函数。unpack() 也是要避免使用的函数，特别是不要在循环体中使用。你可以改用数组的下标去访问，比如下面代码的这个例子：</p><pre id="2a52825e-0bb7-489e-8e81-3700dae29021" class="code"><code>$ resty -e &#x27;
+local a = {100, 200, 300, 400}
+for i = 1, 2 do
+print(unpack(a))
+end&#x27;
+
+$ resty -e &#x27;local a = {100, 200, 300, 400}
+for i = 1, 2 do
+print(a[1], a[2], a[3], a[4])
+end&#x27;</code></pre><p id="aae465b6-753e-4b23-84f0-0b7eeaadc0a3" class="">让我们再深究一下 unpack，这次我们可以用<code>restydoc</code> 来搜索一下：</p><pre id="ed1732e3-b97b-40d7-9d87-2676c888450b" class="code"><code>$ restydoc -s unpack</code></pre><p id="3f981843-0aef-45b2-81e7-cde873f5a798" class="">从 unpack 的文档中，你可以看出，<code>unpack (list [, i [, j]])</code> 和 <code>return list[i], list[i+1], , list[j]</code> 是等价的，你可以把 <code>unpack</code> 看成一个语法糖。这样，你完全可以用数组下标的方式来访问，以免打断 LuaJIT 的 JIT 编译。</p><h3 id="1c6d6612-86bb-478f-9110-15fd492e85f4" class=""><strong>4.pairs() 函数</strong></h3><p id="66892561-1961-404c-89e3-766e51cdd2e8" class="">最后我们来看遍历哈希表的 pairs() 函数，它也不能被 JIT 编译。</p><p id="0181ae53-25b1-4991-8d10-70cfd0249451" class="">不过非常遗憾，这个并没有等价的替代方案，你只能尽量避免使用，或者改用数字下标访问的数组，特别是在热代码路径上不要遍历哈希表。这里我解释一下<strong>代码热路径，它的意思是，这段代码会被返回执行很多次，比如在一个很大的循环里面。</strong></p><p id="6ffaf6b1-4f5f-495c-af8e-85eb6e7d1e9b" class="">说完这四个例子，我们来总结一下，要想规避 NYI 原语的使用，你需要注意下面这两点：</p><ul id="5de0649b-c299-4bf2-91c5-f94c7b59b0e4" class="bulleted-list"><li>请优先使用 OpenResty 提供的 API，而不是 Lua 的标准库函数。这里要牢记， Lua 是嵌入式语言，我们实际上是在 OpenResty 中编程，而不是 Lua。</li></ul><ul id="aaae2fd2-cdef-4e39-82fd-163f72138af3" class="bulleted-list"><li>如果万不得已要使用 NYI 原语，请一定确保它没有在代码热路径上。</li></ul><h2 id="dd0e823d-1b30-42bd-99d0-30cce83e8091" class=""><strong>如何检测 NYI？</strong></h2><p id="aaf3c8c1-dd89-400a-b6cb-47e0926de1ba" class="">讲了这么多 NYI 的规避方案，都是在教你该怎么做。不过，如果到这里戛然而止，那就不太符合 OpenResty 奉行的一个哲学：</p><p id="e6e411c0-6a1a-4abe-864f-b00912c612fd" class=""><strong>能让机器自动完成的，就不要人工参与。</strong></p><p id="8ea44868-3589-4247-832e-8dfb126dbce6" class="">人不是机器，总会有疏漏，能够自动化地检测代码中使用到的 NYI，才是工程师价值的一个重要体现。</p><p id="9ce47eda-9393-4b99-acc2-1ead4c202e99" class="">这里我推荐，LuaJIT 自带的 <code>jit.dump</code> 和 <code>jit.v</code> 模块。它们都可以打印出 JIT 编译器工作的过程。前者会输出非常详细的信息，可以用来调试 LuaJIT 本身，你可以参考<a href="https://github.com/openresty/luajit2/blob/v2.1-agentzh/src/jit/dump.lua">它的源码</a>来做更深入的了解；后者的输出比较简单，每行对应一个 trace，通常用来检测是否可以被 JIT。</p><p id="57e74798-800a-47d0-8737-caaf46e6c88f" class="">具体应该怎么操作呢？</p><p id="f0366481-7c32-4800-a205-88de6159e48c" class="">我们可以先在 <code>init_by_lua</code> 中，添加以下两行代码：</p><pre id="107837c7-8074-4b88-81bc-a6798a4cb295" class="code"><code>local v = require &quot;jit.v&quot;
+v.on(&quot;/tmp/jit.log&quot;)
+</code></pre><p id="305b1008-e09a-4374-87ad-be2cecc336e8" class="">然后，运行你自己的压力测试工具，或者跑几百个单元测试集，让 LuaJIT 足够热，触发 JIT 编译。这些都完成后，再来检查 <code>/tmp/jit.log</code> 的结果。</p><p id="bd92e663-4e7b-4d05-8d15-a2b9f266b3bb" class="">当然，这个方法相对比较繁琐，如果你想要简单验证的话， 使用 <code>resty</code> 就足够了，这个 OpenResty 的 CLI 带有相关选项：</p><pre id="9bb2da52-f87b-4669-a956-a0fa56fc8f64" class="code"><code>$resty -j v -e &#x27;for i=1, 1000 do
+local newstr, n, err = ngx.re.gsub(&quot;hello, world&quot;, &quot;([a-z])[a-z]+&quot;, &quot;[$0,$1]&quot;, &quot;i&quot;)
+end&#x27;
+[TRACE   1 (command line -e):1 stitch C:107bc91fd]
+[TRACE   2 (1/stitch) (command line -e):2 -&gt; 1]
+</code></pre><p id="492a52fa-b14f-43d9-9418-1dd65ef8f686" class="">其中，<code>resty</code> 的 <code>-j</code> 就是和 LuaJIT 相关的选项；后面的值为 <code>dump</code> 和 <code>v</code>，就对应着开启 <code>jit.dump</code> 和 <code>jit.v</code> 模式。</p><p id="5c173796-33c9-4e78-8083-60af42b0981e" class="">在 jit.v 模块的输出中，每一行都是一个成功编译的 trace 对象。刚刚是一个能够被 JIT 的例子，而如果遇到 NYI 原语，输出里面就会指明 NYI，比如下面这个 <code>pairs</code> 的例子：</p><pre id="6348f65a-e51a-4da2-b08d-cbb23663671c" class="code"><code>$resty -j v -e &#x27;local t = {}
+for i=1,100 do
+t[i] = i
+end
+
+for i=1, 1000 do
+for j=1,1000 do
+for k,v in pairs(t) do
+--
+end
+end
+end&#x27;
+
+</code></pre><p id="7ffad38c-fdff-46c7-9b25-428a77852019" class="">它就不能被 JIT，所以结果里，指明了第 8 行中有 NYI 原语。</p><pre id="8278f042-1f0a-4a22-bb46-19608f7b4b57" class="code"><code>[TRACE   1 (command line -e):2 loop]
+[TRACE --- (command line -e):7 -- NYI: bytecode 72 at (command line -e):8]
+</code></pre><p id="fc8856ff-f239-4f1f-8f00-96b90dd641d2" class="">
+</p></div></article></body></html>

@@ -1,0 +1,724 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Kubectl 使用</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+.select-value-color-default { background-color: rgba(206,205,202,0.5); }
+.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
+.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
+.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
+.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
+.select-value-color-green { background-color: rgba(0,135,107,0.2); }
+.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
+.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
+.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
+.select-value-color-red { background-color: rgba(255,0,26,0.2); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="96862283-fec1-4182-9328-fd84035cc37f" class="page sans"><header><div class="page-header-icon undefined"><span class="icon">🤖</span></div><h1 class="page-title">Kubectl 使用</h1></header><div class="page-body"><h3 id="9a69e197-2d4c-409f-aa67-4d1610a6b9b4" class="">基础配置</h3><p id="161321a5-e4ce-4d2b-aff1-8a95b6622b32" class="">主要包含着:</p><ul id="7e4b8ab6-a32c-4103-ac3d-a5e30668bf72" class="bulleted-list"><li>K8s 集群的 api 地址</li></ul><ul id="4805d910-f975-412c-afe5-f8fa4558783f" class="bulleted-list"><li>用于认证的证书地址</li></ul><pre id="046f361c-846b-471d-b86c-a5d5af6a8e5d" class="code"><code>vim $HOME/.kube/config 
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: ...
+    server: https://127.0.0.1:32768
+  name: kind-kind
+contexts:
+- context:
+    cluster: kind-kind
+    user: kind-kind
+  name: kind-kind
+current-context: kind-kind
+kind: Config
+preferences: {}
+users:
+- name: kind-kind
+  user:
+    client-certificate-data: ...
+    client-key-data: ...</code></pre><p id="1701d6ef-b88e-48ac-8c74-6fc0a610ad47" class="">
+</p><h3 id="a16d26b4-4b19-41b8-9435-9b57ea0f155b" class="">别名  缩写 输出格式</h3><p id="62977d85-2387-4a8b-9d4d-e0c97c3ba83e" class="">no 缩写 ~= node 别名 ~= 全名</p><p id="909daaed-161d-43af-b363-6d2fedfbf395" class="">-o 输出不同格式 yml  json 支持</p><pre id="46d04400-5be6-44d1-b0e7-cf0dccce1457" class="code"><code>root@ks-allinone /h/z/docker_space# kubectl get no -o wide
+NAME                 STATUS   ROLES    AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE       KERNEL-VERSION      CONTAINER-RUNTIME
+kind-control-plane   Ready    master   11m   v1.17.0   172.17.0.5    &lt;none&gt;        Ubuntu 19.10   4.15.0-76-generic   containerd://1.3.2
+root@ks-allinone /h/z/docker_space# kubectl get no -o json</code></pre><p id="d0389823-9253-4973-9481-b9d0f172eabd" class="">
+</p><h3 id="6aa642d8-9eec-46a1-8a36-767f2bccf58d" class="">帮助文档</h3><p id="1aa9b9d9-336e-48e8-8d02-511233a325e1" class="">explain 是除了 <code>--help</code> 外的帮助文档 </p><pre id="0a5ef425-bf2b-4316-9911-94765950cf1e" class="code"><code>root@ks-allinone /h/z/docker_space# kubectl explain node
+KIND:     Node
+VERSION:  v1
+
+DESCRIPTION:
+     Node is a worker node in Kubernetes. Each node will have a unique
+     identifier in the cache (i.e. in etcd).
+
+FIELDS:
+   apiVersion   &lt;string&gt;
+     APIVersion defines the versioned schema of this representation of an
+     object. Servers should convert recognized schemas to the latest internal
+     value, and may reject unrecognized values. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+
+   kind &lt;string&gt;
+     Kind is a string value representing the REST resource this object
+     represents. Servers may infer this from the endpoint the client submits
+     requests to. Cannot be updated. In CamelCase. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+
+   metadata     &lt;Object&gt;
+     Standard object&#x27;s metadata. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+
+   spec &lt;Object&gt;
+     Spec defines the behavior of a node.
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+
+   status       &lt;Object&gt;
+     Most recently observed status of the node. Populated by the system.
+     Read-only. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status </code></pre><p id="1181cd3c-fbac-4be9-96ca-13e6b6702d8f" class="">
+</p><p id="76682872-ed06-4125-a7d9-172d3fe0d1c5" class="">
+</p><h3 id="3bb72cd3-ae53-4ffe-8b3e-e87f42a209aa" class="">kubectl run</h3><p id="4cefecf7-c263-4c29-8e8b-3e6a6047059b" class="">必须项 <code>NAME</code> 和  <code>—image</code> </p><p id="2f7aef35-fc9c-466b-af45-23ce517efc20" class="">类似 docker run  生产环境推荐使用 bubectl create 编写配置文件部署</p><p id="6823e953-c6d4-4c3b-932c-dc8f04bce2ab" class="">
+</p><h3 id="366f3a60-6d40-4dec-b8ea-ca56aaf4cac9" class="">kubectl run 简单部署</h3><pre id="73c5fafc-949c-4b08-9c70-87615cf7e4d7" class="code"><code>root@ks-allinone /h/z/docker_space# kubectl run redis --image=&#x27;redis:alpine&#x27;
+deployment.apps/redis created
+root@ks-allinone /h/z/docker_space# kubectl get all
+NAME                         READY   STATUS              RESTARTS   AGE
+pod/redis-5c74dbc6f7-9h5fs   0/1     ContainerCreating   0          15s
+
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    &lt;none&gt;        443/TCP   20m
+
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/redis   0/1     1            0           18s
+
+NAME                               DESIRED   CURRENT   READY   AGE
+replicaset.apps/redis-5c74dbc6f7   1         1         0       16s</code></pre><p id="f7582341-5777-4e60-97f9-f792cde153d9" class="">四个 name 分别代表什么</p><h3 id="4703af6c-7f27-4b85-a421-4895763522bf" class="">Deployment</h3><p id="4b5edd89-2952-451f-b278-2db7c5ab68d5" class="">允许我们进行扩容 滚动更新或降级操作</p><p id="0328a1fc-0430-4a10-982b-a3bb6a29cf4f" class="">执行kubectl run redis --image=&#x27;redis:alpine&#x27; 创建一个 名为 redis 的 <code>Deployment</code> 并为其指定 <code>redis:alpine</code> 镜像</p><p id="c04250a4-5ca2-4798-b87f-21073e09d154" class="">deployment 将Pod 托管给 replicaSet</p><h3 id="dc5f53c5-fc12-4257-9993-13503a09a23c" class="">ReplicaSet 简写 rs</h3><p id="23d72548-ff5b-4a8e-a12d-d50b03460293" class="">低级别结构 允许扩容 </p><p id="3397cccd-318a-4f48-af53-708d71896234" class="">rs 有 deployment 创建 不推荐主动自行创建</p><h3 id="fa21bc11-a403-41bd-af11-1d37a101f346" class="">Service</h3><p id="04a992d8-bbe1-45eb-b8bd-84ba6292fc6c" class="">稳定的入口访问我们的应用服务或者一组Pod 通过 Service 可以很方便的实现 服务发现和负载均衡</p><pre id="c6ae52a0-3547-4f59-af53-8a56e60dd484" class="code"><code>root@ks-allinone /h/z/docker_space# kubectl get service -o wide
+NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE   SELECTOR
+kubernetes   ClusterIP   10.96.0.1    &lt;none&gt;        443/TCP   31m   &lt;none&gt;</code></pre><p id="9119585e-f964-45d9-b73d-8484d240c33e" class="">Service 的4种类型</p><ol id="c35d22df-206e-4e07-8016-899b32ce692f" class="numbered-list" start="1"><li><code>ClusterIP</code> 是 k8s 的service 的默认类型 将 service 暴露于一个仅集群内可访问的 虚拟IP上</li></ol><ol id="9caccb30-8dae-408f-949d-da5a208c1371" class="numbered-list" start="2"><li><code>NodePort</code>  是通过在进群内所有 Node 上都绑定固定端口的方式将服务爆楼出来 可通过&lt;NodeIP&gt;:&lt;NodePort&gt; 访问服务了</li></ol><ol id="2e7a2a48-62b1-40ac-8068-5d3525ad706d" class="numbered-list" start="3"><li><code>LoadBalancer</code> 是通过 Cloud Provider 创建一个外部的负载均衡器，将服务暴露出来，并且会自动创建外部负载均衡器路由请求所需的 Nodeport 或 ClusterIP 。</li></ol><ol id="0754f5a2-a93a-4afe-90bd-e1e5fac72a6c" class="numbered-list" start="4"><li><code>ExternalName</code>  是通过将服务由 DNS CNAME 的方式转发到指定的域名上将服务暴露出来，这需要 kube-dns 1.7 或更高版本支持。</li></ol><p id="0cbbde7f-7c01-469e-910c-06d4c120bb99" class="">
+</p><h3 id="ed28474b-0a0d-4d40-91be-e9b13c57af7a" class="">实践 将刚部署的  redis 暴露服务</h3><pre id="e0f1a26e-988d-4446-9c44-8f9866667808" class="code"><code>root@ks-allinone /h/z/docker_space# 
+kubectl expose deploy/redis --port=6379 --protocol=TCP --target-port=6379 --name=redis-server
+service/redis-server exposed
+root@ks-allinone /h/z/docker_space# kubectl get svc -o wide
+NAME           TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE   SELECTOR
+kubernetes     ClusterIP   10.96.0.1       &lt;none&gt;        443/TCP    38m   &lt;none&gt;
+redis-server   ClusterIP   10.96.192.166   &lt;none&gt;        6379/TCP   14s   run=redis</code></pre><p id="113dfc1b-4f95-4c4a-b765-28811aebb781" class="">由于 redis 默认类型 ClusterIP 所有不能直接通过外部进行访问 使用 port-forward 方式让他可以在集群外部访问</p><p id="53341bd4-1958-47be-b217-1b37bd802531" class=""><code>一次性访问</code></p><pre id="0da4cb0f-048c-4989-9daa-9561aefa5301" class="code"><code># 由于本地6379 端口冲突我更换了一下外部访问的端口
+# 此方法仅是开辟一个在 终端上的 服务 开启另外一个终端即可使用 redis访问
+kubectl port-forward svc/redis-server 6379:6379</code></pre><p id="c1fa70b0-883a-4e76-ae76-e9acd95c1786" class=""><code>切换为NodePort 对外持久访问</code></p><pre id="ae9b2553-5563-4000-85be-233df942ce8e" class="code"><code>root@ks-allinone /h/z/docker_space# 
+kubectl expose deploy/redis --port=6379 --protocol=TCP --target-port=6379 --name=redis-server-nodeport --type=NodePort
+service/redis-server-nodeport exposed
+root@ks-allinone /h/z/docker_space# kubectl get service/redis-server-nodeport -o wide 
+NAME                    TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE   SELECTOR
+redis-server-nodeport   NodePort   10.96.70.203   &lt;none&gt;        6379:30774/TCP   10s   run=redis</code></pre><p id="da5af64c-43c5-4c8d-afae-79b9b1d7a81d" class="">我们可以通过任意 <code>Node</code> 上的 30774 端口连接 </p><blockquote id="82d77e28-3fc0-418b-a551-687b828dcafa" class="">需要注意的是 端口 可以通过 kube-apiserver 的 service-node-port-range 进行配置 范围 默认 30000-32767</blockquote><p id="af2a934f-6033-494b-8106-18737ffabf50" class="">
+</p><h3 id="2a8f5ef6-f1ba-4596-8a74-d22d96a874ea" class="">Pod</h3><p id="0d3cd9f6-4618-4699-bf0f-02643889a7d7" class="">查看当前集群的Pod 状态</p><pre id="1058b2bc-e558-4a97-960d-59f96ad08ab4" class="code"><code>root@ks-allinone /h/z/docker_space# kubectl get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+redis-5c74dbc6f7-9h5fs   1/1     Running   0          30m</code></pre><blockquote id="4fecad5e-b40c-4ec9-9e3a-eab71d301710" class="">对 pod 进行简单扩容 (仅复制型 扩容 ,生产环境不可用)</blockquote><pre id="365f99ee-ec64-43f2-8b8d-74d688920070" class="code"><code>root@ks-allinone /h/z/docker_space# kubectl scale deploy/redis --replicas=2
+deployment.apps/redis scaled
+root@ks-allinone /h/z/docker_space# kubectl get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+redis-5c74dbc6f7-9h5fs   1/1     Running   0          31m
+redis-5c74dbc6f7-jswx2   1/1     Running   0          10s</code></pre><p id="28c712fd-175e-4eea-a3a9-59317632aa03" class="">
+</p></div></article></body></html>

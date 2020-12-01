@@ -1,0 +1,636 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>MTU与MSS</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+.select-value-color-default { background-color: rgba(206,205,202,0.5); }
+.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
+.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
+.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
+.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
+.select-value-color-green { background-color: rgba(0,135,107,0.2); }
+.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
+.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
+.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
+.select-value-color-red { background-color: rgba(255,0,26,0.2); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="94f42112-26f4-42b5-9df5-313a572ca82d" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/gradients_5.png" style="object-position:center 40%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">🛤️</span></div><h1 class="page-title">MTU与MSS</h1></header><div class="page-body"><h2 id="a818f79a-ec2f-4b63-9cb3-d2c19ccc558d" class="">最大传输单元（Maximum Transmission Unit, MTU）</h2><p id="940249db-55f4-40ac-9718-d86377bc482e" class="">下图是以太网的帧格式，以太网的帧最小的帧是 64 字节，除去 14 字节头部和 4 字节 CRC 字段，有效荷载最小为 46 字节。最大的帧是 1518 字节，除去 14 字节头部和 4 字节 CRC，有效荷载最大为 1500，这个值就是以太网的 MTU。因此如果传输 100KB 的数据，至少需要 （100 * 1024 / 1500) = 69 个以太网帧。</p><figure id="ecf5a05a-044c-4234-acbd-9b59de9003f3" class="image"><a href="MTU%E4%B8%8EMSS%2094f4211226f442b59df5313a572ca82d/Untitled.png"><img style="width:1280px" src="MTU%E4%B8%8EMSS%2094f4211226f442b59df5313a572ca82d/Untitled.png"/></a></figure><figure id="162756b4-51b8-4b17-84f8-52d3e3ab324b" class="image"><a href="MTU%E4%B8%8EMSS%2094f4211226f442b59df5313a572ca82d/Untitled%201.png"><img style="width:901px" src="MTU%E4%B8%8EMSS%2094f4211226f442b59df5313a572ca82d/Untitled%201.png"/></a></figure><h1 id="943f230f-5a5b-4bb6-acbe-7f8e18763850" class="">IP 分段</h1><p id="998cbbfe-c0bd-4c0b-86c1-5686e70c1670" class="">IPv4 数据报的最大大小为 65535 字节，这已经远远超过了以太网的 MTU，而且有些网络还会开启巨帧（Jumbo Frame）能达到 9000 字节。 当一个 IP 数据包大于 MTU 时，IP 会把数据报文进行切割为多个小的片段(小于 MTU），使得这些小的报文可以通过链路层进行传输</p><p id="f0788ed0-65c9-4619-99f0-5dc70992021c" class="">
+</p><figure id="aae6c850-caf8-4c05-acae-7df34af2c5e2" class="image"><a href="MTU%E4%B8%8EMSS%2094f4211226f442b59df5313a572ca82d/Untitled%202.png"><img style="width:1280px" src="MTU%E4%B8%8EMSS%2094f4211226f442b59df5313a572ca82d/Untitled%202.png"/></a></figure><p id="99da23e1-11a4-45c0-a8cf-9dcccbfdc048" class="">
+</p><figure id="b553dabc-e73b-4371-919e-30424e59cb65" class="image"><a href="MTU%E4%B8%8EMSS%2094f4211226f442b59df5313a572ca82d/Untitled%203.png"><img style="width:1280px" src="MTU%E4%B8%8EMSS%2094f4211226f442b59df5313a572ca82d/Untitled%203.png"/></a></figure><p id="279cbf20-8ab8-4a8e-bd99-696d004ab5fa" class="">IP协议如果有分片丢失 损坏， 目标主机无法将数据包重组为一个完整的数据包， 依赖于传输层是否进行重传</p><p id="e1af3dd6-846b-47ac-92ca-9ec346598a05" class="block-color-red">利用 IP包分片的策略 对应的网络攻击方式 IP fragment attack 就是一直传  More fragment =1 的包 导致接收方一直在缓存分片，从而可能导致接收方内存耗尽</p><p id="f905b8e1-89e0-4608-be59-fdda594407d8" class="">
+</p><h1 id="d0ce839b-98ad-4713-8f84-cbc409ad3a29" class="">网络中的木桶效应：路径 MTU</h1><p id="958e44e0-fb5f-4d62-b0f4-228aacfde1af" class="">一个包从发送端传输到接收端，中间要跨越很多个网络，每条链路的 MTU 都可能不一样，这个通信过程中最小的 MTU 称为「路径 MTU（Path MTU）」。就好比开车有时候开的是双向 4 车道，有时候可能是乡间小路一样。</p><p id="7e862715-a1bf-4803-804a-eae19f91778a" class="">比如下图中，第一段链路 MTU 大小为 1500 字节，第二段链路 MTU 为 800 字节，第三段链路 MTU 为 1200 字节，则路径 MTU 为三段 MTU 的最小值 800。</p><figure id="109c5ad3-9c56-499a-87b2-f92f25552df9" class="image"><a href="https://user-gold-cdn.xitu.io/2020/2/3/1700a73e55a91949?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"><img src="https://user-gold-cdn.xitu.io/2020/2/3/1700a73e55a91949?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"/></a></figure><p id="05101b62-d33c-437c-be20-31070e346a5c" class="">路径 MTU 就跟木桶效应是一个道理，木桶的盛水量由最短的那条短板决定，路径 MTU 也是由通信链条中最小的 MTU 决定。</p><p id="2884c8b5-1fef-4f2d-91d3-100eefbf3b17" class="">
+</p><figure id="883a6ee1-b801-4311-a8c9-bedeaa5cbfb1" class="image"><a href="MTU%E4%B8%8EMSS%2094f4211226f442b59df5313a572ca82d/Untitled%204.png"><img style="width:1280px" src="MTU%E4%B8%8EMSS%2094f4211226f442b59df5313a572ca82d/Untitled%204.png"/></a></figure><p id="0e19ce1b-8ed6-4b79-a2bb-048f22c69b79" class="">因为有 MTU 的存在，TCP 每次发包的大小也限制了</p><h2 id="3dbc0372-a280-44d1-8eab-5cadea990148" class="">TCP 最大段大小（Max Segment Size，MSS）</h2><p id="e057a8ef-26da-4715-8282-06a609451e7d" class="">TCP 为了避免被发送方分片，会主动把数据分割成小段再交给网络层，最大的分段大小称之为 MSS（Max Segment Size）。</p><p id="a1f4e724-2f04-46ca-aa2b-a70e02fd557d" class="">MSS = MTU - IP header头大小 - TCP 头大小（可变的）20 字节的固定长度和 40 字节的可选参数</p><p id="a89d2e4b-290a-4a5f-8076-1b5715a5f154" class="">
+</p><figure id="2d0e9b38-0728-417f-90f5-f65ae5555091" class="image"><a href="MTU%E4%B8%8EMSS%2094f4211226f442b59df5313a572ca82d/Untitled%205.png"><img style="width:720px" src="MTU%E4%B8%8EMSS%2094f4211226f442b59df5313a572ca82d/Untitled%205.png"/></a></figure><p id="5161c709-9c06-45e4-8a37-8ec462f90216" class="">当三次握手建立一个 TCP 连接时，通信的双方会在 SYN 报文里说明自己允许的最大段大小。</p><p id="536ceee5-2cf5-48d0-8aa0-6168d3f38c2d" class="">
+</p><figure id="644623de-d126-49d2-a66a-138d5847225c" class="image"><a href="MTU%E4%B8%8EMSS%2094f4211226f442b59df5313a572ca82d/Untitled%206.png"><img style="width:1280px" src="MTU%E4%B8%8EMSS%2094f4211226f442b59df5313a572ca82d/Untitled%206.png"/></a></figure><p id="d0da4630-133c-414e-b9e2-5eee9f67aab2" class="">可以看到 TCP 的包体数据大小为 1448，因为TCP 头部里包含了 12 字节的选项（Options）字段，头部大小从之前的 20 字节变为了 32 字节，所以 TCP 包体大小变为了：1500（以太网 MTU） - 20（IP 固定表头大小） - 20（TCP 固定表头大小） - 12（TCP 表头选项） = 1448</p><p id="059ab34e-9081-48da-bbeb-9780ad7f1c18" class="">TSO（TCP Segment Offload）特性了，TSO 特性是指由网卡代替 CPU 实现 packet 的分段和合并，节省系统资源，因此 TCP 可以抓到超过 MTU 的包，但是不是真正传输的单个包会超过链路的 MTU。</p><p id="92c153e1-730b-41ee-ba30-cfee665a80d8" class="">使用ethtool -k可以查看这个特性是否打开，比如ethtool -k eth0输出如下</p><p id="17f04a93-3fe9-4e4c-951b-12bad28d465f" class="">
+</p><figure id="f10125e1-a204-4c30-ae08-09e88b05efea" class="image"><a href="MTU%E4%B8%8EMSS%2094f4211226f442b59df5313a572ca82d/Untitled%207.png"><img style="width:416px" src="MTU%E4%B8%8EMSS%2094f4211226f442b59df5313a572ca82d/Untitled%207.png"/></a></figure><p id="33769597-9c27-4e1d-b98d-0afed2ad332c" class="">
+</p><h1 id="c4de65a1-ce6d-4d0c-8eff-441d9c8acf93" class="">TCP 套接字选项 TCP_MAXSEG</h1><p id="37187e53-895c-4469-9929-88d400cf284b" class="">TCP 有一个 socket 选项 TCP_MAXSEG，可以用来设置此次连接的 MSS，如果设置了这个选项，则 MSS 不能超过这个值。</p><p id="2f388ec8-c5c9-4da9-8a9d-b25ca822b749" class="">setsockopt 合法的范围 88~32767，</p><p id="69a47e79-db5a-42bf-98b0-a6e4db94b69f" class="">
+</p><p id="3873e6a2-f631-4109-bdab-cb694066b486" class="">常量 TCP_MIN_MSS 的值为 88，常量 MAX_TCP_WINDOW 的值为 32768，因此不在 88~32767 之间的 MSS 值会设置失败。</p><blockquote id="095a34b1-45af-458b-b9e6-8de9e4f27429" class="">为什么 TCP_MAXSEG 的下界是 88？</blockquote><p id="04c6a2ca-fce3-42fa-b2d5-d2b6682f1478" class="">这是因为 TCP 头包含了 20 字节的固定长度和 40 字节的可选参数，所以 TCP 头的最大长度是 60，IP 头最大长度也是 60。</p><p id="75331a5e-e40e-4daf-b8ed-16a87cf9e574" class="">为了保证在 TCP 头占满 60 字节、IP 头占满 60 字节的情况下，至少还能发 8 字节的数据，MSS 至少要等于 (MAX_IP_HDR + MAX_TCP_HDR + MIN_IP_FRAG) - (MIN_IP_HDR + MIN_TCP_HDR) = (60+60+8) - (20+20) = 88 字节。</p><p id="d9bfc1b3-26d9-48c3-a270-0e0399ae6801" class="">1、TCP/IP 协议中，MSS 和 MTU 分别工作在哪一层？</p><p id="ec4aceac-deb7-47c4-80b8-1840ae063cdd" class="">MSS 传输层 </p><p id="534316e8-65cd-4feb-a5e3-4d79dac837fe" class="">MTU 网络互连层</p></div></article></body></html>

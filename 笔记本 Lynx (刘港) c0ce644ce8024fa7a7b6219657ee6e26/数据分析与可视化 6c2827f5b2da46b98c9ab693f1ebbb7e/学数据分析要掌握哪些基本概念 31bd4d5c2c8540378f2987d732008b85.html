@@ -1,0 +1,634 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>学数据分析要掌握哪些基本概念</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+.select-value-color-default { background-color: rgba(206,205,202,0.5); }
+.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
+.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
+.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
+.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
+.select-value-color-green { background-color: rgba(0,135,107,0.2); }
+.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
+.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
+.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
+.select-value-color-red { background-color: rgba(255,0,26,0.2); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="31bd4d5c-2c85-4037-8f29-87d732008b85" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/nasa_the_blue_marble.jpg" style="object-position:center 50%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">🎰</span></div><h1 class="page-title">学数据分析要掌握哪些基本概念</h1></header><div class="page-body"><p id="39d9d1a7-57d2-4d83-8ef2-986dc09588c1" class="">商品的捆绑销售是个很有用的营销方式，背后都是数据分析在发挥作用。</p><h2 id="59fa1cad-395e-4a7f-af88-a38319056999" class="">商业智能BI、数据仓库DW、数据挖掘DM三者之间的关系</h2><p id="4884440f-9cf6-4387-ad8f-53a9aa93892e" class="">开头中的百货商店利用数据预测用户购物行为属于<strong>商业智能</strong>，他们积累的顾客的消费行为习惯会存储在<strong>数据仓库</strong>中，通过对个体进行消费行为分析总结出来的规律属于<strong>数据挖掘</strong>。</p><p id="ece1d828-288c-43f8-aea8-f5d856a6b5c6" class="">所以我们能在这个场景里看到三个重要的概念：商业智能、数据仓库和数据挖掘。</p><p id="565ae55f-56ec-4d4e-bc42-c45eca7d65fa" class=""><strong>商业智能</strong>的英文是Business Intelligence，缩写是BI。相比于数据仓库、数据挖掘，它是一个更大的概念。商业智能可以说是基于数据仓库，经过了数据挖掘后，得到了商业价值的过程。所以说数据仓库是个金矿，数据挖掘是炼金术，而商业报告则是黄金。</p><p id="1074b2d3-c194-427a-8f91-fa4fbfde2d50" class=""><strong>数据仓库</strong>的英文是Data Warehouse，缩写是DW。它可以说是BI这个房子的地基，搭建好DW这个地基之后，才能进行分析使用，最后产生价值。</p><p id="336bed83-794d-46c6-92fa-2114911e5289" class="">数据仓库可以说是数据库的升级概念。从逻辑上理解，数据库和数据仓库没有什么区别，都是通过数据库技术来存储数据的。不过从数量上来讲，数据仓库的量更庞大，适用于数据挖掘和数据分析。数据库可以理解是一项技术。</p><p id="4cbddd41-e0a9-46e1-a486-1b4175de5757" class="">数据仓库将原有的多个数据来源中的数据进行汇总、整理而得。数据进入数据仓库前，必须消除数据中的不一致性，方便后续进行数据分析和挖掘。</p><p id="1c7fca70-3935-45cc-b4e2-67087d0bb192" class=""><strong>数据挖掘</strong>的英文是Data Mining，缩写是DM。在商业智能BI中经常会使用到数据挖掘技术。数据挖掘的核心包括分类、聚类、预测、关联分析等任务，通过这些炼金术，我们可以从数据仓库中得到宝藏，比如商业报告。</p><p id="a3467159-f9b1-4404-8705-ead0fe464f9f" class="">很多时候，企业老板总是以结果为导向，他们认为商业报告才是他们想要的，但是这也是需要经过地基DW、搬运工ETL、科学家DM等共同的努力才得到的。</p><h2 id="eebc703d-744d-4571-b369-ec25477c5109" class="">元数据 VS 数据元</h2><p id="d3c792bc-640c-44c7-b260-dd296d93d5fc" class="">我们前面提到了数据仓库，在数据仓库中，还有一类重要的数据是元数据，那么它和数据元有什么区别呢？</p><p id="08d99f63-e51a-4c05-aa2b-adc9e1bd9bb9" class=""><strong>元数据</strong>（MetaData）：描述其它数据的数据，也称为“中介数据”。</p><p id="e71e66cf-da55-4cb0-9f32-0549d3f10166" class=""><strong>数据元</strong>（Data Element）：就是最小数据单元。</p><p id="b8b299b8-7938-4f57-becc-56d0ffbffadd" class="">在生活中，只要有一类事物，就可以定义一套元数据。举个例子，比如一本图书的信息包括了书名、作者、出版社、ISBN、出版时间、页数和定价等多个属性的信息，我们就可以把这些属性定义成一套图书的元数据。</p><p id="5b797d50-1f1f-4671-9fb8-808f60f914b8" class="">在图书这个元数据中，书名、作者、出版社就是数据元。你可以理解是最小的数据单元。元数据最大的好处是使信息的描述和分类实现了结构化，让机器处理起来很方便。</p><p id="d65e4b29-3690-484c-8bfb-eadd44af0ec3" class="">元数据可以很方便地应用于数据仓库。比如数据仓库中有数据和数据之间的各种复杂关系，为了描述这些关系，元数据可以对数据仓库的数据进行定义，刻画数据的抽取和转换规则，存储与数据仓库主题有关的各种信息。而且整个数据仓库的运行都是基于元数据的，比如抽取调度数据、获取历史数据等。</p><p id="1a106219-6454-495a-91e8-bc5b0119531c" class="">通过元数据，可以很方便地帮助我们管理数据仓库。</p><h2 id="72f22466-4546-4781-b089-cb67bc59f766" class="">数据挖掘的流程</h2><p id="398b4730-9f4f-421e-9e17-c7cb280820f8" class="">聊完了数据仓库，我们再来谈谈数据挖掘。数据挖掘不是凭空产生的，它与数据库技术的发展分不开。数据挖掘的一个英文解释叫Knowledge Discovery in Database，简称KDD，也就是数据库中的知识发现。</p><p id="c2ad3a6b-d0c9-4404-8649-51a04a569897" class="">在数据挖掘中，有几个非常重要的任务，就是<strong>分类、聚类、预测和关联分析</strong>。我来解释下这些概念。</p><p id="6daaddb0-6775-4ef4-b5e9-cda41d297461" class=""><strong>1. 分类</strong></p><p id="0a5c0f60-c766-4c08-94ec-38ba9c5a023f" class="">就是通过训练集得到一个分类模型，然后用这个模型可以对其他数据进行分类。</p><p id="bd48465b-1dc1-4b9f-a340-86c8dc3d3c57" class="">这里需要说明下训练集和测试集的概念。一般来说数据可以划分为训练集和测试集。训练集是用来给机器做训练的，通常是人们整理好训练数据，以及这些数据对应的分类标识。通过训练，机器就产生了自我分类的模型，然后机器就可以拿着这个分类模型，对测试集中的数据进行分类预测。同样如果测试集中，人们已经给出了测试结果，我们就可以用测试结果来做验证，从而了解分类器在测试环境下的表现。</p><p id="a65ac5ed-9bb1-4079-bf60-9ab30ff527d0" class=""><strong>2. 聚类</strong></p><p id="a70c9041-0c7c-4f4a-a4fd-14e7a2b5f1c8" class="">人以群分，物以类聚。聚类就是将数据自动聚类成几个类别，聚到一起的相似度大，不在一起的差异性大。我们往往利用聚类来做数据划分。</p><p id="1dcaff1f-71b9-42a9-b42e-02ae95821f40" class=""><strong>3. 预测</strong></p><p id="4d0a1cc0-393f-4247-8149-8222bd1611ad" class="">顾名思义，就是通过当前和历史数据来预测未来趋势，它可以更好地帮助我们识别机遇和风险。</p><p id="fb0eb7fa-b5fa-4abe-9cee-bc5a9365f725" class=""><strong>4. 关联分析</strong></p><p id="a1325926-4c12-4d42-8d92-bc3ec6b4defa" class="">就是发现数据中的关联规则，它被广泛应用在购物篮分析，或事务数据分析中。比如我们开头提到的那个案例。</p><p id="c2d0f98a-b4ec-446f-9df8-5452771715bb" class="">数据挖掘要怎么完成这些任务呢？它需要将数据库中的数据经过一系列的加工计算，最终得出有用的信息。</p><p id="73cbfbb2-7737-4e07-b90a-e777b8874f1c" class="">这个过程可以用以下步骤来描述。</p><figure id="93d9fd78-6e64-4a42-b961-9ccaa38b4d8d" class="image"><a href="https://static001.geekbang.org/resource/image/bb/5e/bb63e82e50de89776abf7681a5b8785e.jpg"><img src="https://static001.geekbang.org/resource/image/bb/5e/bb63e82e50de89776abf7681a5b8785e.jpg"/></a></figure><p id="ae49907f-7045-4588-9698-390a0bcc81cf" class="">首先，输入我们收集到的数据，然后对数据进行预处理。预处理通常是将数据转化成我们想要的格式，然后我们再对数据进行挖掘，最后通过后处理得到我们想要的信息。</p><p id="2cc84dbe-4576-4478-9d22-afe19ebb2e9a" class="">那你可能想问，为什么不直接进行数据挖掘，还要进行数据预处理呢？</p><p id="b3df4dc3-dab8-40df-9291-08035a9aef2c" class="">因为在这个过程中，输入的数据通常是从不同渠道采集而来的，所以数据的格式以及质量是参差不齐的，所以我们需要对数据进行预处理。</p><p id="16ecb1bf-11e1-4dc3-8c28-f336c3f1ed9d" class=""><strong>数据预处理</strong>中，我们会对数据进行几个处理步骤：数据清洗，数据集成，以及数据变换。</p><p id="a86d4501-6cd1-404c-9d7f-c4c114c1c1b2" class=""><strong>1. 数据清洗</strong></p><p id="cfcd9825-f5f8-4c78-a25d-a43b42055a56" class="">主要是为了去除重复数据，去噪声（即干扰数据）以及填充缺失值。</p><p id="6fa78e45-bff2-4879-985c-fc4612e6ef9d" class=""><strong>2. 数据集成</strong></p><p id="4cf5d688-56de-4c80-b96f-bafb71716d9c" class="">是将多个数据源中的数据存放在一个统一的数据存储中。</p><p id="e99fb070-3ada-4c2d-bde4-cd80995f4b11" class=""><strong>3. 数据变换</strong></p><p id="9b08e637-18e5-4bf0-bae4-cf235a6fde66" class="">就是将数据转换成适合数据挖掘的形式。比如，通过归一化将属性数据按照比例缩放，这样就可以将数值落入一个特定的区间内，比如0~1之间。</p><p id="2470c6d4-45d6-4a74-a393-6c17d4c2e1db" class="">我会在后面的几节课给你讲解如何对数据进行预处理。</p><p id="b3f2bdd7-ea6b-4e82-942c-839cc813b49b" class=""><strong>数据后处理</strong>是将模型预测的结果进一步处理后，再导出。比如在二分类问题中，一般能得到的是0~1之间的概率值，此时把数据以0.5为界限进行四舍五入就可以实现后处理。</p><h2 id="4bf7ab79-be6b-474a-bba3-0431a934c668" class="">白话数据概念</h2><p id="094b14af-9b02-4e0a-9f05-521a7aab2912" class="">说了这么多概念，可能你还是觉得很抽象，我来打个比喻。比如你认识了两个漂亮的女孩。</p><p id="b52c4435-112f-4f54-bce6-8536e0aae7ed" class=""><strong>商业智能</strong>会告诉你要追哪个？成功概率有多大？</p><p id="f0d2bdb3-a13c-498f-9e31-af7e7539f269" class=""><strong>数据仓库</strong>会说，我这里存储了这两个女孩的相关信息，你要吗？</p><p id="6368e821-97e3-436a-aff0-0e41aa70c4e6" class="">其中每个女孩的数据都有单独的文件夹，里面有她们各自的姓名、生日、喜好和联系方式等，这些具体的信息就是<strong>数据元，</strong><strong>加起来叫作</strong><strong>元数据。</strong></p><p id="00eec76c-3bd2-4163-b906-5e2853c83fa6" class=""><strong>数据挖掘</strong>会帮助你确定追哪个女孩，并且整理好数据仓库，这里就可以使用到各种算法，帮你做决策了。</p><p id="76b17d71-dfe2-4057-9bad-fa79e5dea58c" class="">你可能会用到<strong>分类算法</strong>。御姐、萝莉、女王，她到底属于哪个分类？</p><p id="d86376fe-da8a-4195-b43c-9e6c75fdbe30" class="">如果认识的女孩太多了，多到你已经数不过来了，比如说5万人！你就可以使用<strong>聚类算法</strong>了，它帮你把这些女孩分成多个群组，比如5个组。然后再对每个群组的特性进行了解，进行决策。这样就把5万人的决策，转化成了5个组的决策。成功实现降维，大大提升了效率。如果你想知道这个女孩的闺蜜是谁，那么<strong>关联分析算法</strong>可以告诉你。</p><p id="845c740b-30e7-4cbb-a270-32a5da51f27d" class="">如果你的数据来源比较多，比如有很多朋友给你介绍女朋友，很多人都推荐了同一个，你就需要去重，这叫<strong>数据清洗</strong>；为了方便记忆，你把不同朋友推荐的女孩信息合成一个，这叫<strong>数据集成</strong>；有些数据渠道统计的体重的单位是公斤，有些是斤，你就需要将它们转换成同一个单位，这叫<strong>数据变换。</strong></p><p id="1848b343-0151-4b11-a49f-33e83251859b" class="">最后你可以进行数据可视化了，它会直观地把你想要的结果呈现出来。</p><h2 id="c6f1f97c-1843-467d-8caa-43e26f80fbe9" class="">上帝不会告诉我们规律，而是展示给我们数据</h2><p id="9952251b-736a-4501-9d90-74ce3af2d2a2" class="">还记得高中物理课上我们计算自由落体运动加速度的实验吗？</p><p id="073c0dc9-9232-497d-889b-5d5b7edf6324" class="">我们将重物连上纸带，通过电火花打点计时器，在纸带上会出现多个打点。然后我们通过纸带上打点的个数，以及点之间的间距，来计算自由落体运动的加速度。通过多组实验，取平均值的方式将误差降到最小。</p><p id="1adaaade-0692-4b30-a585-3d691b6e8fdf" class="">在我们的高中时代，许多定律都是通过实验得出的。参加工作以后，很多数据是业务数据，比如电商的客户购物数据等，这些数据依然有着某些规律。这就需要我们通过数据挖掘的力量来帮我们揭示规律，通过利用这些规律，可以帮我们创造更大的价值。</p><p id="46f7e49f-7837-423d-a05a-d03731d332ad" class="">今天的内容到这里就结束了，我出几道题让你回顾下今天的内容吧。</p><p id="a49d98ad-770a-4d67-b2c0-0c848fbeaa26" class="">1.什么是KDD？</p><p id="f7f7e27a-3f64-447f-81e1-06799239b81e" class="">A. 数据挖掘与知识发现
+B. 领域知识发现
+C. 文档知识发现
+D. 动态知识发现</p><p id="d7d88df9-3ed6-4590-8159-3267330e2ccb" class="">2.某超市将火锅产品和骨汤进行并列陈列后，这两种商品相比以往提升了50%的销售额，这种属于数据挖掘的哪类问题？</p><p id="9f7efc83-995a-4aaf-b0e6-f567c195c6e3" class="">A. 关联规则发现
+B. 聚类
+C. 分类
+D. 自然语言处理</p><p id="230f79d4-31f9-45c3-a919-2bd20226ab59" class="">
+</p></div></article></body></html>

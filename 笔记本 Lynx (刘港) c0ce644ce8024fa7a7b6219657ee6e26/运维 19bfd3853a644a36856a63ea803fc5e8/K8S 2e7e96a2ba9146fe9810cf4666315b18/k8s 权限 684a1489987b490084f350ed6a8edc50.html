@@ -1,0 +1,704 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>k8s 权限</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+.select-value-color-default { background-color: rgba(206,205,202,0.5); }
+.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
+.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
+.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
+.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
+.select-value-color-green { background-color: rgba(0,135,107,0.2); }
+.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
+.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
+.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
+.select-value-color-red { background-color: rgba(255,0,26,0.2); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="684a1489-987b-4900-84f3-50ed6a8edc50" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/met_joseph_hidley_1870.jpg" style="object-position:center 60%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">🛠</span></div><h1 class="page-title">k8s 权限</h1></header><div class="page-body"><p id="a789fc08-6959-45a7-b120-d96e1dcd4e87" class="">kube-apiserver 类似 openstack keystone   全部操作的网关服务</p><p id="99109381-50c5-47de-9e25-800df0704716" class="">3类安全措施</p><ol id="19d38ff7-c064-48c4-942b-b7e479d8d9ca" class="numbered-list" start="1"><li>识别用户身份的 认证  Authentication</li></ol><ol id="ee1a731a-5db4-43e6-aa38-6cff8cb20668" class="numbered-list" start="2"><li>用于控制用户对资源访问的授权 Authorization</li></ol><ol id="a6e8142a-56a0-4153-9d10-133e0d33724c" class="numbered-list" start="3"><li>用于资源管理方面的准入控制 Admission Control</li></ol><p id="8576ca75-f7fd-4601-89ff-12989f25f4f1" class=""><strong>认证 ( Authentication)</strong></p><blockquote id="d40181e4-a23d-44cb-9b28-1a38f7da89d9" class="">k8s中有两类用户,一般用户及 Service Account</blockquote><ul id="dcb345c9-a2ee-4c26-bc46-62e58b1218ac" class="bulleted-list"><li>一般用户 表示 外部服务进行管理,由管理员进行秘钥分发 一般用户无法通过 api 直接添加到集群的</li></ul><ul id="04717c71-2e31-4ebe-bb65-28a6432d8035" class="bulleted-list"><li>Service Account  由 K8S API 管理的用户，与特定的 NameSpace（命名空间）绑定。由 API Server 自动创建或者通过 API 手动进行创建。 同时，它会自动挂载到 Pod 中容器的 /var/run/secrets/kubernetes.io/serviceaccount/ 目录中，其中会包含 NameSpace token 等信息，并允许集群内进程与 API Server 进行交互。</li></ul><p id="c1e21b91-ae6a-4756-87b9-0b080029ef78" class="">对集群操作的 API 都是与用户相关联的，或者被视为匿名请求。匿名请求可通过 kube-apiserver 的 --anonymous-auth 参数进行控制，默认是开启的，匿名用户默认的用户名为 system:anonymous，所属组为 system:unauthenticated。</p><p id="2077cff5-178e-4ef6-b126-2bfbb1dde9b7" class="">
+</p><p id="475d183b-0aa7-4309-86e1-4d132d94e711" class="">K8S 支持以下认证机制：</p><ul id="b9f08994-714b-4165-af24-15d4c746369d" class="bulleted-list"><li>X509 客户端证书：这个认证机制我们并不陌生，我们前面搭建集群时，虽然没有指定配置文件，但 <code>kubeadm</code> 已经添加了默认参数 <code>--client-ca-file=/etc/kubernetes/pki/ca.crt</code> 而在进行认证时，将会使用客户端证书 subject 的 <code>CN</code> 域（Common Name）用作用户名，<code>O</code> 域（Organization）用作组名。</li></ul><figure id="d4f87bea-9445-41ef-9d69-d9ff16be2f58"><a href="https://zh.wikipedia.org/wiki/X.509" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">X.509</div><div class="bookmark-description">X.509是密码学里 公钥证书的格式标准。X.509证书已应用在包括 TLS/SSL在内的众多 ...</div></div><div class="bookmark-href"><img src="https://zh.wikipedia.org/static/favicon/wikipedia.ico" class="icon bookmark-icon"/>https://zh.wikipedia.org/wiki/X.509</div></div><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Cross-certification_diagram.svg/350px-Cross-certification_diagram.svg.png" class="bookmark-image"/></a></figure><ul id="17fde28d-646a-4070-82e3-0542f0df7149" class="bulleted-list"><li>引导 Token：这个我们也不会陌生，前面我们搭建集群时，当集群通过 <code>kubeadm init</code> 初始化完成后，将会展示一行提示，其中便携带着引导 Token。如果不使用 <code>kubeadm</code> 时，需要设置 <code>--enable-bootstrap-token-auth=true</code>。</li></ul><ul id="32d97cb1-4b87-4899-bd9c-238bf65949c9" class="bulleted-list"><li>静态 Token 文件：启动 <code>Kube-apiserver</code> 时，设置 <code>--token-auth-file=SOMEFILE</code> 并在请求时，加上 <code>Authorization: Bearer TOKEN</code> 的请求头即可。</li></ul><ul id="2b215da4-5664-456e-b8f3-7ea905935af1" class="bulleted-list"><li>静态密码文件：与静态 Token 文件类似，设置 <code>--basic-auth-file=SOMEFILE</code> 并在请求时，加上 <code>Authorization: Basic BASE64ENCODED(USER:PASSWORD)</code> 的头即可。</li></ul><ul id="b556f983-21b5-485b-bab8-5777e35e60b6" class="bulleted-list"><li>Service Account Token：这是默认启用的机制，关于 <code>Service Account</code> 前面也已经介绍过了，不再赘述。</li></ul><ul id="bedb2bf5-314f-46e3-a306-08d1bf09c98f" class="bulleted-list"><li>OpenID：其实是提供了 <a href="http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html">OAuth2</a> 的认证支持，像 Azure 或 Google 这类云厂商都提供了相关支持。</li></ul><ul id="2b16b2a1-977c-4248-8197-7daae58ca87d" class="bulleted-list"><li>认证代理：主要是配合身份验证代理进行使用，比如提供一个通用的授权网关供用户使用。</li></ul><ul id="adf885b1-066a-4e6f-a3b7-cb72aa7e34da" class="bulleted-list"><li>Webhook：提供 Webhook 配合一个远端服务器使用。</li></ul><p id="a9ff5aab-0493-4908-8db3-581526dcc94d" class="">可以选择同时开启多个认证  默认 用 kubeadm 创建集群, 默认便会开启 X509 客户端证书</p><h3 id="e16fef34-b23a-47c1-8281-12279d007eee" class="">授权（Authorization）</h3><p id="634826b6-a57d-453a-9d26-2da39e60072c" class="">与 linux 文件夹权限类似</p><p id="383feed7-392e-402b-b8b2-8ef94b57a841" class="">用户想要正确操作资源,必须获得授权, 默认 k8s 默认情况下的权限都是拒绝 403 返回错误</p><p id="0e64ee7e-baa3-42e0-a899-ae177a692fdd" class="">|k8s 授权机制</p><p id="86d2fc38-d641-4937-87a6-9f0764a2df3d" class="">
+</p><ul id="4a8d3992-94c6-44bb-967f-eeeebd652f1f" class="bulleted-list"><li>ABAC(Attribute-Based Access Control)：基于属性的访问控制，在使用时需要先配置 <code>--authorization-mode=ABAC</code> 和 <code>--authorization-policy-file=SOME_FILENAME</code> 。ABAC 本身设计是非常好的，但是在 K8S 中使用却有点过于繁琐，这里不再赘述。</li></ul><ul id="21d3e16b-8512-4b48-b96d-5aa3713e2e68" class="bulleted-list"><li>RBAC(Role-based access control)：基于角色的访问控制，自 K8S 1.6 开始 beta，1.8 进入稳定版，已被大量使用。而当我们使用 <code>kubeadm</code> 安装集群的时候，默认将会添加 <code>--authorization-mode=Node,RBAC</code> 的参数，表示同时开启 <code>Node</code> 和 <code>RBAC</code> 授权机制。当然，如果你对 <a href="https://www.mongodb.com/cn">MongoDB</a> 有所了解或者比较熟悉的话，这部分的内容就会很容易理解，因为 MongoDB 的权限控制也使用了 <code>RBAC</code> （Role-based access control）。</li></ul><ul id="c409b0f8-5204-463d-a8e6-2633604b85aa" class="bulleted-list"><li>Node：这是一种特殊用途的授权机制，专门用于对 <code>kubelet</code> 发出的 API 请求做授权验证。</li></ul><ul id="4978fd71-903b-4af4-9395-0d7e592a5f9d" class="bulleted-list"><li>Webhook：使用外部的 Server 通过 API 进行授权校验，需要在启动时候增加 <code>--authorization-webhook-config-file=SOME_FILENAME</code> 以及 <code>--authorization-mode=Webhook</code></li></ul><ul id="1d350b6c-d24f-48a5-afea-1a4fd51f4448" class="bulleted-list"><li>AlwaysAllow：默认配置，允许全部。</li></ul><ul id="acafc875-26f3-4a32-beaf-efcb8d1bbb20" class="bulleted-list"><li>AlwaysDeny：通常用于测试，禁止全部。</li></ul><h3 id="4092fb33-19bb-4416-9508-e96b722ee1e1" class="">角色</h3><p id="2242c241-b28f-446f-bf3b-d1a2cc1413a1" class="">RBAC </p><p id="76620119-4d29-4175-b195-c3f5a0b06fd3" class="">k8s 中有两类角色</p><ol id="2d671b48-2f52-4cbe-a2ac-6bf3d0dd3d62" class="numbered-list" start="1"><li>Role  可以当做一组权限的合集, 被限制在某个 namespace 内 </li></ol><ol id="f14e50e1-8e11-4e04-8342-2eb1a58ba79b" class="numbered-list" start="2"><li>ClusterRole . 对于集群级别的资源不被NameSpace 所限制,并且还有一些非资源类请求</li></ol><p id="c673957d-883d-4048-97bd-ae6b13e4d96d" class="">当已经了解到角色后，剩下给用户授权也就只是需要做一次绑定即可。在 K8S 中将这一过程称之为 <code>binding</code>，即 <code>rolebinding</code> 和 <code>clusterrolebinding</code>。 我们来看下集群刚初始化后的情况：</p><p id="27745bc5-5f78-4ca0-bca3-9929f487d755" class=""><strong>roles</strong></p><pre id="6b9d3999-5d3f-4a4f-bbac-d67337facf99" class="code"><code>root@ks-allinone ~# kubectl get roles --all-namespaces=true
+NAMESPACE     NAME                                             AGE
+kube-public   kubeadm:bootstrap-signer-clusterinfo             16h
+kube-public   system:controller:bootstrap-signer               16h
+kube-system   extension-apiserver-authentication-reader        16h
+kube-system   kube-proxy                                       16h
+kube-system   kubeadm:kubelet-config-1.17                      16h
+kube-system   kubeadm:nodes-kubeadm-config                     16h
+kube-system   system::leader-locking-kube-controller-manager   16h
+kube-system   system::leader-locking-kube-scheduler            16h
+kube-system   system:controller:bootstrap-signer               16h
+kube-system   system:controller:cloud-provider                 16h
+kube-system   system:controller:token-cleaner                  16h
+root@ks-allinone ~# kubectl get rolebindings --all-namespaces=true
+NAMESPACE     NAME                                                AGE
+kube-public   kubeadm:bootstrap-signer-clusterinfo                16h
+kube-public   system:controller:bootstrap-signer                  16h
+kube-system   kube-proxy                                          16h
+kube-system   kubeadm:kubelet-config-1.17                         16h
+kube-system   kubeadm:nodes-kubeadm-config                        16h
+kube-system   system::extension-apiserver-authentication-reader   16h
+kube-system   system::leader-locking-kube-controller-manager      16h
+kube-system   system::leader-locking-kube-scheduler               16h
+kube-system   system:controller:bootstrap-signer                  16h
+kube-system   system:controller:cloud-provider                    16h
+kube-system   system:controller:token-cleaner                     16h</code></pre><p id="fda1ba3a-3906-4f4d-8719-e4a8d96de276" class=""><strong>clusterrole</strong></p><pre id="d1ce913b-e88a-498f-a36a-6734c5d4a6e4" class="code"><code> kubectl get clusterroles --all-namespaces=true
+ kubectl get clusterrolesbindings --all-namespaces=true</code></pre><h3 id="e2d64490-d84b-445a-b041-98cd50a3381a" class="">查看用户权限</h3><p id="484da431-a693-4da3-99f5-64560060ed85" class="">我们一直在使用的  <code>kubectl</code> </p><pre id="3152c15a-f711-401d-b88f-d4f45cbf2033" class="code"><code>root@ks-allinone ~# kubectl config current-context
+kind-kind  # 名外 kind-kind 的用户在 kind-kind 的 cluster上</code></pre><pre id="6fca03d0-37fd-44fa-98d5-0a7d6bb9bdd2" class="code"><code>root@ks-allinone ~# kubectl config view  -o yaml
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: DATA+OMITTED
+    server: https://127.0.0.1:32768
+  name: kind-kind
+contexts:
+- context:
+    cluster: kind-kind
+    user: kind-kind
+  name: kind-kind
+current-context: kind-kind
+kind: Config
+preferences: {}
+users:
+- name: kind-kind
+  user:
+    client-certificate-data: REDACTED
+    client-key-data: REDACTED</code></pre><p id="8d530834-79a3-414c-ae93-32302ef8f28d" class="">client-certificate-data 的部分默认是不显示的，而它的内容实际是通过 base64 加密后的证书内容。我们可以通过通过以下方式进行查看</p><pre id="e1eafe78-47b9-467f-872c-b77aa08070ca" class="code"><code>root@ks-allinone ~# kubectl config view  --raw -o jsonpath=&#x27;{ .users[?(@.name == &quot;kind-kind&quot;)].user.client-certificate-data}&#x27; |base64 -d  
+-----BEGIN CERTIFICATE-----
+MIIC8jCCAdqgAwIBAgIIF4b/1NLDqN8wDQYJKoZIhvcNAQELBQAwFTETMBEGA1UE
+AxMKa3ViZXJuZXRlczAeFw0yMDAzMDkxMjEyMTFaFw0yMTAzMDkxMjEyMjNaMDQx
+FzAVBgNVBAoTDnN5c3RlbTptYXN0ZXJzMRkwFwYDVQQDExBrdWJlcm5ldGVzLWFk
+bWluMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3wqI6za3NPmCp+g6
+IKakM8vkJacszzjUB64yPq0byRGQsJN34TD/tWET0YND5h7P0h7sopvaKoNVe4Hc
+HceXAvBPPyxTprytQhyspNp7ajCMm+yjNXMpHNYtlVW8NHn3t9f8TJ73JWGRK+kd
+qAuvdRzUF7fPCDVu2A6ouExtWZ0aMi2yhTI2GezxgVLwH1p1v+MogsprAYyhptds
+qVIj9UeReWMl1sI+BAt8hVLANfhnvyqo0cHMTiA23wyYJrDf+/I9+e/AgDWXKxzX
+WeSrTHI82+X+Xg0BPuPh8y5ebSDKBpW1tF6lRkXyI4hIw8/I9iaL1hk/HlU2Q7ni
+4Rxf+wIDAQABoycwJTAOBgNVHQ8BAf8EBAMCBaAwEwYDVR0lBAwwCgYIKwYBBQUH
+AwIwDQYJKoZIhvcNAQELBQADggEBAB1zaVqTRSHfC8y7liACxJbmOOb/yYSS7vh4
+N/ziJdeJlxtF64RiNPIreOSJHXbNXbSo3XKtEF3gtBEj+OVyTAlzOLOzSdF39yt3
+pkzXdxeqdhDf52GhZC084i/QqGnHmYGXMkLGjtT+a5IfRrrQvcfFUGL/O8Ivpu/q
+xU9tG78SQNO3JzfnXdPWq/mDESLeEJZXHzD5wmqqr7MXfj5Lf0pZe2h4vjbtoMau
+kUJkqy9sbutctqMf2C84sbD17lQ9ZVPSPWEW6cDbpUkh4HUUfrVHRchFW8KBUtWx
+GDYkzUxp1b5mwkd4XSAPcBoRp1f/MllYwkbad+O2GK3/bXaQdaA=
+-----END CERTIFICATE-----</code></pre><p id="362da93c-db36-4139-a30e-123d07e6b9ae" class="">用户是 kubernetes-admin 所属组是 system:master</p><pre id="fecba4d1-beb8-4649-91bf-4267eab6cf99" class="code"><code>root@ks-allinone ~# kubectl config view  --raw -o jsonpath=&#x27;{ .users[?(@.name == &quot;kind-kind&quot;)].user.client-certificate-data}&#x27; |base64 -d |openssl x509 -text -noout
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 1695323599285758175 (0x1786ffd4d2c3a8df)
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: CN = kubernetes
+        Validity
+            Not Before: Mar  9 12:12:11 2020 GMT
+            Not After : Mar  9 12:12:23 2021 GMT
+        Subject: O = system:masters, CN = kubernetes-admin</code></pre><p id="c9e29334-3f9f-44fa-9d31-0512af865948" class="">
+</p></div></article></body></html>

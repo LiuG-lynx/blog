@@ -1,0 +1,859 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>1. 领域建模</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+.select-value-color-default { background-color: rgba(206,205,202,0.5); }
+.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
+.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
+.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
+.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
+.select-value-color-green { background-color: rgba(0,135,107,0.2); }
+.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
+.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
+.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
+.select-value-color-red { background-color: rgba(255,0,26,0.2); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="20d47c41-9e40-4e69-8ffb-c8e1e09c2e6d" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/met_paul_signac.jpg" style="object-position:center 30.000000000000004%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">🛁</span></div><h1 class="page-title">1. 领域建模</h1></header><div class="page-body"><p id="547db00b-863c-4426-849e-a5c7cf2864d8" class="">TDD 领域驱动编程  </p><h2 id="99657c27-821d-4554-8820-07b8feab5357" class="">需求</h2><p id="c5432ceb-45f5-453c-8510-daaab41081f4" class="">客户并不关心数据模型,他们只关心系统的工作</p><p id="a0e59d35-0845-492a-b5cd-f2b7e50f5a7e" class="">
+</p><h2 id="01975796-98a6-49b8-a84c-2d33246eb8dd" class="">讨论</h2><p id="50c7f395-758e-4905-aaaa-4cbebb6a8b80" class="">如何通过TDD 方式构建富对象模型, 如何构建与持久化无关的代码, 如何在领域周围创建稳定的API以便积极重构</p><h2 id="66399428-558b-4275-ac30-1cf2267e126f" class="">涉及的 相关涉及模式</h2><ul id="3988e477-c6f7-4064-81d5-e7a611c0df51" class="bulleted-list"><li>仓库模式   对持久化存储的抽象</li></ul><ul id="76b4fe7a-31fc-417d-a5ae-729118eb12e2" class="bulleted-list"><li>服务层 定义我们业务逻辑开始和结束的位置</li></ul><ul id="c8b198a1-fb03-4791-84b0-33a1cc730fbd" class="bulleted-list"><li>工作单元模式 提供原子操作的抽象</li></ul><ul id="1e5d601b-8e05-4d23-a74a-2a58c4084899" class="bulleted-list"><li>聚合模式 保证数据完整性</li></ul><p id="fdc3b2c4-0e5c-439c-9c38-4456b20644fa" class="">
+</p><figure id="11bcbe29-a7e2-425a-8a71-107341be7d96" class="image"><a href="1%20%E9%A2%86%E5%9F%9F%E5%BB%BA%E6%A8%A1%2020d47c419e404e698ffbc8e1e09c2e6d/Untitled.png"><img style="width:452px" src="1%20%E9%A2%86%E5%9F%9F%E5%BB%BA%E6%A8%A1%2020d47c419e404e698ffbc8e1e09c2e6d/Untitled.png"/></a></figure><h3 id="1d8ba0e9-3cf7-4efb-bf9f-59e23db14d75" class="">领域建模关键模式</h3><ol id="e514224e-a59c-4ef0-9f24-96f34efbf109" class="numbered-list" start="1"><li>实体 Entity</li></ol><ol id="cdd70016-74a7-4d76-9d1e-298a52b852be" class="numbered-list" start="2"><li>值对象 Value Object</li></ol><ol id="0e4b8cac-518c-4bab-a32c-0b0f637cfe63" class="numbered-list" start="3"><li>领域服务 Domain Service</li></ol><p id="71bbfdea-d418-411b-9cbc-0abf9af4570d" class="">
+</p><h3 id="3ee411b0-30c6-4b84-892d-6b65264b7f38" class="">领域模型 Domain Model</h3><p id="ceeb5fcb-8aa8-4b65-95ed-ec6e621dc128" class="">Domain 是你试图解决某些问题的一种说法,一组活动</p><p id="97c36f3a-1a86-4305-a322-3b597fd0ff64" class="">Model 是一个过程或现象的映射 业务地图, 对复杂问题的一种思考方式</p><p id="b0c1000e-2443-4db8-bba6-bab02d15a712" class="">
+</p><h3 id="9aad5c24-fba1-42c7-b06a-3165cd9664ff" class="">深入领域语言</h3><div id="aa21a5a9-acd7-4034-94c5-e762b4c0a4b2" class="collection-content"><h4 class="collection-title">业务相信注释</h4><table class="collection-content"><thead><tr><th><span class="icon property-icon"><svg viewBox="0 0 14 14" style="width:14px;height:14px;display:block;fill:rgba(55, 53, 47, 0.4);flex-shrink:0;-webkit-backface-visibility:hidden" class="typesTitle"><path d="M7.73943662,8.6971831 C7.77640845,8.7834507 7.81338028,8.8943662 7.81338028,9.00528169 C7.81338028,9.49823944 7.40669014,9.89260563 6.91373239,9.89260563 C6.53169014,9.89260563 6.19894366,9.64612676 6.08802817,9.30105634 L5.75528169,8.33978873 L2.05809859,8.33978873 L1.72535211,9.30105634 C1.61443662,9.64612676 1.2693662,9.89260563 0.887323944,9.89260563 C0.394366197,9.89260563 0,9.49823944 0,9.00528169 C0,8.8943662 0.0246478873,8.7834507 0.0616197183,8.6971831 L2.46478873,2.48591549 C2.68661972,1.90669014 3.24119718,1.5 3.90669014,1.5 C4.55985915,1.5 5.12676056,1.90669014 5.34859155,2.48591549 L7.73943662,8.6971831 Z M2.60035211,6.82394366 L5.21302817,6.82394366 L3.90669014,3.10211268 L2.60035211,6.82394366 Z M11.3996479,3.70598592 C12.7552817,3.70598592 14,4.24823944 14,5.96126761 L14,9.07922535 C14,9.52288732 13.6549296,9.89260563 13.2112676,9.89260563 C12.8169014,9.89260563 12.471831,9.59683099 12.4225352,9.19014085 C12.028169,9.6584507 11.3257042,9.95422535 10.5492958,9.95422535 C9.60035211,9.95422535 8.47887324,9.31338028 8.47887324,7.98239437 C8.47887324,6.58978873 9.60035211,6.08450704 10.5492958,6.08450704 C11.3380282,6.08450704 12.040493,6.33098592 12.4348592,6.81161972 L12.4348592,5.98591549 C12.4348592,5.38204225 11.9172535,4.98767606 11.1285211,4.98767606 C10.6602113,4.98767606 10.2411972,5.11091549 9.80985915,5.38204225 C9.72359155,5.43133803 9.61267606,5.46830986 9.50176056,5.46830986 C9.18133803,5.46830986 8.91021127,5.1971831 8.91021127,4.86443662 C8.91021127,4.64260563 9.0334507,4.44542254 9.19366197,4.34683099 C9.87147887,3.90316901 10.6232394,3.70598592 11.3996479,3.70598592 Z M11.1778169,8.8943662 C11.6830986,8.8943662 12.1760563,8.72183099 12.4348592,8.37676056 L12.4348592,7.63732394 C12.1760563,7.29225352 11.6830986,7.11971831 11.1778169,7.11971831 C10.5616197,7.11971831 10.056338,7.45246479 10.056338,8.0193662 C10.056338,8.57394366 10.5616197,8.8943662 11.1778169,8.8943662 Z M0.65625,11.125 L13.34375,11.125 C13.7061869,11.125 14,11.4188131 14,11.78125 C14,12.1436869 13.7061869,12.4375 13.34375,12.4375 L0.65625,12.4375 C0.293813133,12.4375 4.43857149e-17,12.1436869 0,11.78125 C-4.43857149e-17,11.4188131 0.293813133,11.125 0.65625,11.125 Z"></path></svg></span>说明 1</th><th><span class="icon property-icon"><svg viewBox="0 0 14 14" style="width:14px;height:14px;display:block;fill:rgba(55, 53, 47, 0.4);flex-shrink:0;-webkit-backface-visibility:hidden" class="typesText"><path d="M7,4.56818 C7,4.29204 6.77614,4.06818 6.5,4.06818 L0.5,4.06818 C0.223858,4.06818 0,4.29204 0,4.56818 L0,5.61364 C0,5.88978 0.223858,6.11364 0.5,6.11364 L6.5,6.11364 C6.77614,6.11364 7,5.88978 7,5.61364 L7,4.56818 Z M0.5,1 C0.223858,1 0,1.223858 0,1.5 L0,2.54545 C0,2.8216 0.223858,3.04545 0.5,3.04545 L12.5,3.04545 C12.7761,3.04545 13,2.8216 13,2.54545 L13,1.5 C13,1.223858 12.7761,1 12.5,1 L0.5,1 Z M0,8.68182 C0,8.95796 0.223858,9.18182 0.5,9.18182 L11.5,9.18182 C11.7761,9.18182 12,8.95796 12,8.68182 L12,7.63636 C12,7.36022 11.7761,7.13636 11.5,7.13636 L0.5,7.13636 C0.223858,7.13636 0,7.36022 0,7.63636 L0,8.68182 Z M0,11.75 C0,12.0261 0.223858,12.25 0.5,12.25 L9.5,12.25 C9.77614,12.25 10,12.0261 10,11.75 L10,10.70455 C10,10.4284 9.77614,10.20455 9.5,10.20455 L0.5,10.20455 C0.223858,10.20455 0,10.4284 0,10.70455 L0,11.75 Z"></path></svg></span>说明</th></tr></thead><tbody><tr id="249ca863-3e31-4d4d-b03b-f155ac0a2bf5"><td class="cell-title"><a href="1%20%E9%A2%86%E5%9F%9F%E5%BB%BA%E6%A8%A1%2020d47c419e404e698ffbc8e1e09c2e6d/%E4%B8%9A%E5%8A%A1%E7%9B%B8%E4%BF%A1%E6%B3%A8%E9%87%8A%20aa21a5a9acd7403494c5e762b4c0a4b2/%E4%BA%A7%E5%93%81%E7%94%B1SKU%E8%BF%9B%E8%A1%8C%E6%A0%87%E8%AF%86%20249ca8633e314d4db03bf155ac0a2bf5.html">产品由SKU进行标识</a></td><td class="cell-YTBm"></td></tr><tr id="e8b522fc-bad9-41be-a70f-98203d3f2414"><td class="cell-title"><a href="1%20%E9%A2%86%E5%9F%9F%E5%BB%BA%E6%A8%A1%2020d47c419e404e698ffbc8e1e09c2e6d/%E4%B8%9A%E5%8A%A1%E7%9B%B8%E4%BF%A1%E6%B3%A8%E9%87%8A%20aa21a5a9acd7403494c5e762b4c0a4b2/%E9%A1%BE%E5%AE%A2%E4%B8%8B%E8%AE%A2%E5%8D%95%E3%80%82%E8%AE%A2%E5%8D%95%E7%94%B1%E8%AE%A2%E5%8D%95ID%E5%BC%95%E7%94%A8%E6%A0%87%E8%AF%86%EF%BC%8C%E5%B9%B6%E7%94%B1%E5%A4%9A%E4%B8%AA%E8%AE%A2%E5%8D%95%E8%A1%8C%E7%BB%84%E6%88%90%EF%BC%8C%E5%85%B6%E4%B8%AD%E6%AF%8F%E8%A1%8C%E6%9C%89%E4%B8%80%E4%B8%AASKU%E5%92%8C%E4%B8%80%E4%B8%AA%E6%95%B0%E9%87%8F%20e8b522fcbad941bea70f98203d3f2414.html">顾客下订单。订单由订单ID引用标识，并由多个订单行组成，其中每行有一个SKU和一个数量</a></td><td class="cell-YTBm">- 10 个红色咖啡桌</td></tr><tr id="7042370c-d486-446f-bb8e-dd1bb67d21e8"><td class="cell-title"><a href="1%20%E9%A2%86%E5%9F%9F%E5%BB%BA%E6%A8%A1%2020d47c419e404e698ffbc8e1e09c2e6d/%E4%B8%9A%E5%8A%A1%E7%9B%B8%E4%BF%A1%E6%B3%A8%E9%87%8A%20aa21a5a9acd7403494c5e762b4c0a4b2/%E9%87%87%E8%B4%AD%E9%83%A8%E9%97%A8%E9%87%87%E8%B4%AD%E4%B8%80%E6%89%B9%E4%BA%A7%E5%93%81%EF%BC%8C%E6%AF%8F%E4%B8%80%E6%89%B9%E6%9C%89%E4%B8%80%E4%B8%AA%E5%94%AF%E4%B8%80%E7%9A%84ID,%20SKU%20%E5%92%8C%20%E6%95%B0%E9%87%8F%EF%BC%8C%E7%A7%B0%E4%B9%8B%E4%B8%BA%E9%87%87%E8%B4%AD%E6%89%B9%E6%AC%A1%EF%BC%8C%E9%87%87%E8%B4%AD%E6%89%B9%E6%AC%A1%E5%8F%AF%E5%88%86%E4%B8%BA%E5%B7%B2%E7%BB%8F%207042370cd486446fbb8edd1bb67d21e8.html">采购部门采购一批产品，每一批有一个唯一的ID, SKU 和 数量，称之为采购批次，采购批次可分为已经在仓库中，和正在运输中的</a></td><td class="cell-YTBm"></td></tr><tr id="f5c97e6d-ce6d-4056-99ed-c70fa882534d"><td class="cell-title"><a href="1%20%E9%A2%86%E5%9F%9F%E5%BB%BA%E6%A8%A1%2020d47c419e404e698ffbc8e1e09c2e6d/%E4%B8%9A%E5%8A%A1%E7%9B%B8%E4%BF%A1%E6%B3%A8%E9%87%8A%20aa21a5a9acd7403494c5e762b4c0a4b2/%E9%87%87%E8%B4%AD%E9%83%A8%E9%97%A8%E9%87%87%E8%B4%AD%E4%B8%80%E6%89%B9%E4%BA%A7%E5%93%81,%20%E6%AF%8F%E4%B8%80%E6%89%B9%E9%83%BD%E6%9C%89%E4%B8%80%E4%B8%AA%E5%94%AF%E4%B8%80ID,SKU%E5%92%8C%E6%95%B0%E9%87%8F,%E7%A7%B0%E4%B9%8B%E4%B8%BA%E9%87%87%E8%B4%AD%E6%89%B9%E6%AC%A1,%E9%87%87%E8%B4%AD%E6%89%B9%E6%AC%A1%E5%8F%AF%E5%88%86%E4%B8%BA%E5%9C%A8%E4%BB%93%E5%BA%93%E5%92%8C%20f5c97e6dce6d405699edc70fa882534d.html">采购部门采购一批产品, 每一批都有一个唯一ID,SKU和数量,称之为采购批次,采购批次可分为在仓库和正在运输中</a></td><td class="cell-YTBm"></td></tr><tr id="d29ea603-c4b4-4a4b-925c-5456f2e22552"><td class="cell-title"><a href="1%20%E9%A2%86%E5%9F%9F%E5%BB%BA%E6%A8%A1%2020d47c419e404e698ffbc8e1e09c2e6d/%E4%B8%9A%E5%8A%A1%E7%9B%B8%E4%BF%A1%E6%B3%A8%E9%87%8A%20aa21a5a9acd7403494c5e762b4c0a4b2/%E6%AF%8F%E4%B8%AA%E8%AE%A2%E5%8D%95%E4%B8%8D%E8%83%BD%E5%88%86%E9%85%8D%E4%B8%A4%E6%AC%A1%E7%BB%99%E9%87%87%E8%B4%AD%E6%89%B9%E6%AC%A1%20d29ea603c4b44a4b925c5456f2e22552.html">每个订单不能分配两次给采购批次</a></td><td class="cell-YTBm"></td></tr><tr id="4e58c4ae-7d3e-4360-82b7-31951d7a0652"><td class="cell-title"><a href="1%20%E9%A2%86%E5%9F%9F%E5%BB%BA%E6%A8%A1%2020d47c419e404e698ffbc8e1e09c2e6d/%E4%B8%9A%E5%8A%A1%E7%9B%B8%E4%BF%A1%E6%B3%A8%E9%87%8A%20aa21a5a9acd7403494c5e762b4c0a4b2/%E9%87%87%E8%B4%AD%E6%89%B9%E6%AC%A1%E6%9C%89%E4%B8%80%E4%B8%AA%E5%8F%ABETA%E7%9A%84%E6%97%B6%E9%97%B4%EF%BC%8C%E4%BB%96%E8%A1%A8%E7%A4%BA%E5%88%B0%E8%BE%BE%E4%BB%93%E5%BA%93%E7%9A%84%E6%97%B6%E9%97%B4%204e58c4ae7d3e436082b731951d7a0652.html">采购批次有一个叫ETA的时间，他表示到达仓库的时间</a></td><td class="cell-YTBm"></td></tr><tr id="4fe1151c-731b-4a2b-9ed3-4665177a5241"><td class="cell-title"><a href="1%20%E9%A2%86%E5%9F%9F%E5%BB%BA%E6%A8%A1%2020d47c419e404e698ffbc8e1e09c2e6d/%E4%B8%9A%E5%8A%A1%E7%9B%B8%E4%BF%A1%E6%B3%A8%E9%87%8A%20aa21a5a9acd7403494c5e762b4c0a4b2/%E6%88%91%E4%BB%AC%E8%A6%81%E4%BC%98%E5%85%88%E6%B6%88%E8%80%97%E5%BA%93%E5%AD%98%E8%80%8C%E4%B8%8D%E6%98%AF%E9%87%87%E8%B4%AD%E6%89%B9%E6%AC%A1%204fe1151c731b4a2b9ed34665177a5241.html">我们要优先消耗库存而不是采购批次</a></td><td class="cell-YTBm"></td></tr><tr id="4b51dc37-e62e-41de-b47c-4fc832631c68"><td class="cell-title"><a href="1%20%E9%A2%86%E5%9F%9F%E5%BB%BA%E6%A8%A1%2020d47c419e404e698ffbc8e1e09c2e6d/%E4%B8%9A%E5%8A%A1%E7%9B%B8%E4%BF%A1%E6%B3%A8%E9%87%8A%20aa21a5a9acd7403494c5e762b4c0a4b2/%E6%88%91%E4%BB%AC%E8%A6%81%E6%8C%89%E7%85%A7ETA%E6%9C%80%E6%97%A9%E5%88%B0%E8%BE%BE%E9%A1%BA%E5%BA%8F%E6%9D%A5%E5%88%86%E9%85%8D%E8%AE%A2%E5%8D%95%204b51dc37e62e41deb47c4fc832631c68.html">我们要按照ETA最早到达顺序来分配订单</a></td><td class="cell-YTBm"></td></tr></tbody></table></div><p id="dac8d0a0-6bcc-4d3d-a8ee-0ae6dc55f4f9" class="">
+</p><h3 id="9a048934-930c-425d-825a-24b76cd410fc" class="">对领域模型进行单元测试</h3><p id="8331053b-85e9-4885-9359-aeacaa58e034" class="">这里使用了TDD的模式进行开发，当然，我这里并不想说明如何使用TDD开发，但是我想说的是，如何从需求出发来构建一个领域模型</p><p id="8ea51697-3bbe-4833-a0a3-120ba8bed633" class="">Example 1. 第一个分配订单的测试</p><pre id="ac61c835-c35d-4050-9e94-244b6e6051d3" class="code"><code>def test_allocating_to_batch_reduces_the_available_quantity():
+    batch = Batch(&quot;batch-001&quot;, &quot;桌子&quot;, qty=20, eta=date.today())
+    line = OrderLine(&quot;order-ref&quot;, &quot;桌子&quot;, 2)
+    batch.allocate(line)
+    assert batch.available_quantity == 18</code></pre><p id="78cf1033-75bf-4538-94ad-982109b0a7ea" class="">单元测试的名称描述了我们希望从系统中看到的行为，我们使用类和变量的名称取自业务术语。我们可以向非技术同事展示这段代码。让他们认可这正确表达了系统的行为。</p><p id="3b29ecc6-6758-42be-930c-05020bc71b1a" class="">下面我们写一个符合我们需求的领域模型</p><p id="ba06c069-c6ac-4166-862e-72749244a55d" class="">Example 2. 第一个采购批次的模型</p><pre id="47043a94-2845-43cd-9dcf-338cb816a0b3" class="code"><code>@dataclass(frozen=True) #(1)(2)
+class OrderLine:
+    orderid: str
+    sku: str
+    qty: int
+    
+class Batch:
+    def __init__(
+        self, ref: str, sku: str, qty: int, eta: Optional[date] #(2)
+    ):
+    self.reference = ref
+    self.sku = sku
+    self.eta = eta
+    self.available_quantity = qty
+    
+    def allocate(self, line: OrderLine):
+        self.available_quantity -= line.qty #(3)</code></pre><p id="82b14e1e-12a4-4e4e-86cf-8a69a293abb5" class="">接下来我做一些解释</p><ol id="4fdcef2d-34f5-45ff-a25b-18844cd47691" class="numbered-list" start="1"><li><code>OrderLine</code>是一个不可变数据，它并没有行为</li></ol><ol id="e8383a9c-f375-4353-b027-5b677c159ddf" class="numbered-list" start="2"><li>我们没有用导入来区别模型，为了更方便阅读</li></ol><ol id="a7f51a9f-a34c-4169-8d49-85abf56ffdbd" class="numbered-list" start="3"><li>虽然Typehint饱受争议，但是他给IDE提供大量提示，而且对于模型而言，他阐述了模型本身对入参的期望，这将在后面的开发中获得非常多的好处。</li></ol><p id="0bdde942-2f91-406e-94cf-2e82b5ff2563" class="">在这个模型中我们实现的非常简单：一个<code>Batch</code>只包装一个整数可用量，我们在分配时递减该值。虽然我们写了相当多的代码，只是为了从一个数字减去另一个数字。但是我认为对我们领域进行精确建模，这点代价来说是值得的。</p><p id="c9043245-fcaf-4c14-962f-90241b89cabc" class="">OK,让我们编写一些失败的测试</p><p id="7f53d2ed-efd8-4c5e-a2d1-eb883c7c52b0" class="">Example 3. 测试我们订单是否可以分配采购批次的逻辑</p><pre id="f1087f6f-984d-430b-b62c-5c7aa23dc91a" class="code"><code>def make_batch_and_line(sku, batch_qty, line_qty):
+    return (
+        Batch(&quot;batch-001&quot;, sku, batch_qty, eta=date.today()),
+        OrderLine(&quot;order-123&quot;, sku, line_qty)
+    )
+def test_can_allocate_if_available_greater_than_required():
+    large_batch, small_line = make_batch_and_line(&quot;ELEGANT-LAMP&quot;, 20, 2)
+    assert large_batch.can_allocate(small_line)
+    
+def test_cannot_allocate_if_available_smaller_than_required():
+    small_batch, large_line = make_batch_and_line(&quot;ELEGANT-LAMP&quot;, 2, 20)
+    assert small_batch.can_allocate(large_line) is False
+    
+def test_can_allocate_if_available_equal_to_required():
+    batch, line = make_batch_and_line(&quot;ELEGANT-LAMP&quot;, 2, 2)
+    assert batch.can_allocate(line)
+    
+def test_cannot_allocate_if_skus_do_not_match():
+    batch = Batch(&quot;batch-001&quot;, &quot;UNCOMFORTABLE-CHAIR&quot;, 100, eta=None)
+    different_sku_line = OrderLine(&quot;order-123&quot;, &quot;EXPENSIVE-TOASTER&quot;, 10)
+    assert batch.can_allocate(different_sku_line) is False</code></pre><p id="30c24b58-a9cc-4ae2-a280-f8b0ec8e438b" class="">我们为一个新方法分配了四个简单的测试来测试采购批次能否分配订单，ok，现在我们为<code>Batch</code>模型添加新的方法</p><pre id="791164a1-81e5-4e60-9766-4a59abd53e8b" class="code"><code>def can_allocate(self, line: OrderLine) -&gt; bool:
+    return self.sku == line.sku and self.available_quantity &gt;= line.qty</code></pre><p id="46e5c785-7676-4de3-a864-c9859a995fc8" class="">现在，我们可以通过递增或递减<code>Batch.available_quantity</code>来解除分配的功能，让我们实现<code>deallocate()</code>，首先我们先写测试</p><pre id="72516a8c-7950-4990-9a70-5e9546df52a0" class="code"><code>def test_can_only_deallocate_allocated_lines():
+    batch, unallocated_line = make_batch_and_line(&quot;DECORATIVE-TRINKET&quot;, 20, 2)
+    batch.deallocate(unallocated_line)
+    assert batch.available_quantity == 20</code></pre><p id="63b17796-f448-4657-b762-555aa1818360" class="">在这个测试中，我们断言从一个采购批次解绑一个订单没有效果，除非该采购批次先前分配了该订单。为了实现这一点，我们需要了解已经分配了那些订单。让我们看看实现</p><pre id="ed4ec76b-4d19-4fa1-8ee4-666db6ee5008" class="code"><code>class Batch:
+    def __init__(
+    self, ref: str, sku: str, qty: int, eta: Optional[date]
+    ):
+        self.reference = ref
+        self.sku = sku
+        self.eta = eta
+        self._purchased_quantity = qty
+        self._allocations = set() # type: Set[OrderLine]
+        
+    def allocate(self, line: OrderLine):
+        if self.can_allocate(line):
+            self._allocations.add(line)
+            
+    def deallocate(self, line: OrderLine):
+        if line in self._allocations:
+            self._allocations.remove(line)
+        
+    @property
+    def allocated_quantity(self) -&gt; int:
+        return sum(line.qty for line in self._allocations)
+        
+    @property
+    def available_quantity(self) -&gt; int:
+        return self._purchased_quantity - self.allocated_quantity
+        
+    def can_allocate(self, line: OrderLine) -&gt; bool:
+        return self.sku == line.sku and self.available_quantity &gt;= line.qty
+</code></pre><p id="895f168c-1298-4cd6-9932-bd53a4fa63e2" class="">一下是我们UML模型图</p><figure id="e18ec9d9-4ec2-4381-b4b9-3d44368ca49b" class="image"><a href="https://user-gold-cdn.xitu.io/2020/3/2/1709a5200ccd422e?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"><img src="https://user-gold-cdn.xitu.io/2020/3/2/1709a5200ccd422e?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"/></a></figure><p id="a5f866b1-9573-468a-9fed-6c99d85c1736" class="">OK,采购批次现在可以追踪一组已经分配的<code>OrderLine</code>对象。当我们分配时，如果我们有足够的可用数量，我们只是添加到集合中。我们现在的可用数量是一个<code>property</code>的计算属性：购买数量 - 分配数量</p><p id="2d31181a-70cf-4e9f-bb75-95ab4dc02013" class="">emmmm, 我们还有很多事情要做。比如 <code>allocate()</code>和<code>deallocate()</code>有可能悄无声息的失败，但我们至少有了一个基础模型</p><p id="505b0d0b-a4b3-48a6-9577-d17530047919" class="">顺便说一句，<code>_allocations</code>我们使用了一个set，他让我们我们容易处理最后一个测试用例，因为集合中的项是唯一的</p><pre id="d293868b-c137-467f-a3aa-b3b3b4e8299e" class="code"><code>def test_allocation_is_idempotent():
+    batch, line = make_batch_and_line(&quot;ANGULAR-DESK&quot;, 20, 2)
+    batch.allocate(line)
+    batch.allocate(line)
+    assert batch.available_quantity == 18</code></pre><p id="ec031477-4b01-4396-86ee-740d47080ef6" class="">OK,到目前为止，有很多人觉得领域模型过于琐碎，不值得去费心DDD（甚至有人连面向对象都不去做）。当然这也不是没有根据，因为在现实开发中，任何数量的业务规则和边缘案例都会出突然出现，毕竟产品经理都是神经病。比如：客户要求在特定的未来日期拿到货，这意味着我们可能不希望将他们分配到最早的采购批次中。一些产品呢，又不是从采购订单那里分配的，而是直接从供应商那里订购的，所以他们有不同的逻辑。根据客户的位置，我们分配到他们所在地区的一部分仓库和货物，还有一些比如我们本地区缺货的话。我们乐意从不同地区的仓库运送货物，等等，产品经理总会比我们想象中更快的速度去堆积复杂性。</p><p id="85fe06de-85a9-4d84-933a-d85d85bba855" class="">但随着我们文章的进行，我们将继续拓展我们这个简单的模型，并将他插入到API，数据库，甚至Excle中等真实的业务场景中。我们将看到严格遵循封装和仔细分层的原则将如何帮助我们避免出现一团屎山。</p><p id="582c8535-c1b6-4cfb-b4a7-dd0637c53f96" class="">
+</p><h2 id="eb6efd5c-13b1-46b4-b08c-4f62df099a87" class="">Dataclasses可以让对值对象（Value Objects）更具有表达力</h2><p id="91f822cd-e84c-415b-bb3d-08f23d0c0f40" class="">在前面的示例代码中，我们大量使用了<code>OrderLine</code>对象，那么这个<code>line</code>究竟是什么呢？在我们这个业务中，一项订单可能含有多个货物在里面，每个<code>line</code>由一个SKU和数量来表达，那我们这样的一个订单用YAML来表示，可能是这样的</p><pre id="8c4be2e3-7d4d-4164-9d5c-8987950115ad" class="code"><code>Order_reference: 12345
+Lines:
+ - sku: RED-CHAIR
+   qty: 25
+ - sku: BLU-CHAIR
+   qty: 25
+ - sku: GRN-CHAIR
+   qty: 25</code></pre><p id="7bfb2bbf-f116-41be-ac55-9afe49c6a765" class="">这里你可能会发现，虽然每个订单都有一个唯一标识它的引用，但是<code>OrderLine</code>确没有。所以即使我们将订单的引用添加到<code>OrderLine</code>类中，他也不是标识<code>OrderLine</code>本身。</p><p id="25487431-efa9-497a-9a89-45419eb4c4ed" class="">每当我们有一个有数据但是没有身份的业务概念时，我们通常会用Value Object去表达它。Value Object是持有领域对象唯一标识数据的对象。我们通常使她不能改变。可变数据是让系统变得复杂的罪魁祸首。</p><p id="d1583d37-5a76-46e1-9aef-8e8042e14f7a" class="">dataclasses给我们一个好处是，具有相同的<code>order_id</code>/<code>sku</code>/<code>qty</code>的两个数据他们是相等的。比如</p><pre id="641a064d-1e8d-4ef7-94b9-fa31a0754b59" class="code"><code>from dataclasses import dataclass
+from typing import NamedTuple
+from collections import namedtuple
+
+@dataclass(frozen=True)
+class Name:
+    first_name: str
+    surname: str
+    
+class Money(NamedTuple):
+    currency: str
+    value: int
+    
+Line = namedtuple(&#x27;Line&#x27;, [&#x27;sku&#x27;, &#x27;qty&#x27;])
+
+def test_equality():
+    assert Money(&#x27;gbp&#x27;, 10) == Money(&#x27;gbp&#x27;, 10)
+    assert Name(&#x27;Harry&#x27;, &#x27;Percival&#x27;) != Name(&#x27;Bob&#x27;, &#x27;Gregory&#x27;)
+    assert Line(&#x27;RED-CHAIR&#x27;, 5) == Line(&#x27;RED-CHAIR&#x27;, 5)</code></pre><p id="baafce46-2a54-4a23-b5d7-ce2222beaf52" class="">这些<code>Value Object</code>符合我们对现实世界中的直觉。比如，我们讨论究竟是哪张100元人民币钞票对我们来说并不重要，因为他们都有相同的价值。同样如果两个<code>OrderLine</code>具有相同的order_id 、qty、sku。那么他们两个也是相等的。除了这些，我们仍然可以进行更多的更复杂的操作。例如一些数学操作符</p><pre id="6bfab418-522e-48ff-846c-c8473434bef8" class="code"><code>fiver = Money(&#x27;gbp&#x27;, 5)
+tenner = Money(&#x27;gbp&#x27;, 10)
+def can_add_money_values_for_the_same_currency():
+    assert fiver + fiver == tenner
+    
+def can_subtract_money_values():
+    assert tenner - fiver == fiver
+ 
+def adding_different_currencies_fails():
+    with pytest.raises(ValueError):
+        Money(&#x27;usd&#x27;, 10) + Money(&#x27;gbp&#x27;, 10)
+ 
+def can_multiply_money_by_a_number():
+    assert fiver * 5 == Money(&#x27;gbp&#x27;, 25)
+    
+def multiplying_two_money_values_is_an_error():
+    with pytest.raises(TypeError):
+        tenner * fiver</code></pre><p id="5c3d9c17-e345-4acd-b08e-95f801b66809" class="">
+</p><h2 id="0ff25590-6aa3-4d91-becb-35091882afd5" class="">Dataclasses可以让对值对象（Value Objects）更具有表达力</h2><p id="79be554e-7815-46f6-8d56-c05dbca5556b" class="">在前面的示例代码中，我们大量使用了<code>OrderLine</code>对象，那么这个<code>line</code>究竟是什么呢？在我们这个业务中，一项订单可能含有多个货物在里面，每个<code>line</code>由一个SKU和数量来表达，那我们这样的一个订单用YAML来表示，可能是这样的</p><pre id="786ec317-c97f-4df8-8982-b99e37d68869" class="code"><code>Order_reference: 12345
+Lines:
+ - sku: RED-CHAIR
+   qty: 25
+ - sku: BLU-CHAIR
+   qty: 25
+ - sku: GRN-CHAIR
+   qty: 25</code></pre><p id="06f4d06a-0bd8-4de3-9ae2-5e3b58dff296" class="">这里你可能会发现，虽然每个订单都有一个唯一标识它的引用，但是<code>OrderLine</code>确没有。所以即使我们将订单的引用添加到<code>OrderLine</code>类中，他也不是标识<code>OrderLine</code>本身。</p><p id="c298db73-8925-447f-a0c9-76861bc97a6f" class="">每当我们有一个有数据但是没有身份的业务概念时，我们通常会用Value Object去表达它。Value Object是持有领域对象唯一标识数据的对象。我们通常使她不能改变。可变数据是让系统变得复杂的罪魁祸首。</p><p id="52e3d135-6dfb-4fb6-a709-b309b8e8f7f2" class="">dataclasses给我们一个好处是，具有相同的<code>order_id</code>/<code>sku</code>/<code>qty</code>的两个数据他们是相等的。比如</p><pre id="1a7bc0ae-e53e-43f2-a3a4-9c2eb4c333bb" class="code"><code>from dataclasses import dataclass
+from typing import NamedTuple
+from collections import namedtuple
+
+@dataclass(frozen=True)
+class Name:
+    first_name: str
+    surname: str
+    
+class Money(NamedTuple):
+    currency: str
+    value: int
+    
+Line = namedtuple(&#x27;Line&#x27;, [&#x27;sku&#x27;, &#x27;qty&#x27;])
+
+def test_equality():
+    assert Money(&#x27;gbp&#x27;, 10) == Money(&#x27;gbp&#x27;, 10)
+    assert Name(&#x27;Harry&#x27;, &#x27;Percival&#x27;) != Name(&#x27;Bob&#x27;, &#x27;Gregory&#x27;)
+    assert Line(&#x27;RED-CHAIR&#x27;, 5) == Line(&#x27;RED-CHAIR&#x27;, 5)</code></pre><p id="b784f744-bba7-4ba3-bfec-bf1e90babac8" class="">这些<code>Value Object</code>符合我们对现实世界中的直觉。比如，我们讨论究竟是哪张100元人民币钞票对我们来说并不重要，因为他们都有相同的价值。同样如果两个<code>OrderLine</code>具有相同的order_id 、qty、sku。那么他们两个也是相等的。除了这些，我们仍然可以进行更多的更复杂的操作。例如一些数学操作符</p><pre id="2663785c-3a91-44da-ada6-a3f3e89de319" class="code"><code>fiver = Money(&#x27;gbp&#x27;, 5)
+tenner = Money(&#x27;gbp&#x27;, 10)
+def can_add_money_values_for_the_same_currency():
+    assert fiver + fiver == tenner
+    
+def can_subtract_money_values():
+    assert tenner - fiver == fiver
+ 
+def adding_different_currencies_fails():
+    with pytest.raises(ValueError):
+        Money(&#x27;usd&#x27;, 10) + Money(&#x27;gbp&#x27;, 10)
+ 
+def can_multiply_money_by_a_number():
+    assert fiver * 5 == Money(&#x27;gbp&#x27;, 25)
+    
+def multiplying_two_money_values_is_an_error():
+    with pytest.raises(TypeError):
+        tenner * fiver</code></pre><h2 id="75574c6c-cb74-4327-8a29-ad4fc5c4197d" class="">Value Objects 和 Entities(实体)</h2><p id="b3f267ca-1f50-4bdd-8ee7-5f5126305b96" class="">首先我们看<code>OrderLine</code>由<code>order_id</code>、<code>sku</code>、<code>qty</code>组成，如果我们更改其中任意一个值，那么现在其实应该是有一个新的<code>OrderLine</code>。这就是<code>Value Object</code>的定义：任何由其数据标识的对象，并且没有长期存在的标志。那么Entities呢？</p><p id="91b72505-4df1-4b30-b092-391f127d8035" class="">是否还是有点感到头晕？那么我们看个简单的例子，上文中我们定义了个叫<code>Name</code>的Value Object。如果我们取名叫张三，那么如果我们换一个名字，叫“李四”那么“张三”还是“张三”吗？不，你应该是获得了叫李四的<code>Name</code>对象</p><pre id="d040ab9a-eb10-4f85-96ca-21e1c3c0611a" class="code"><code>def test_name_equality():
+    assert Name(&quot;张三&quot;) != Name(&quot;李四&quot;)</code></pre><p id="49b44510-8ce2-423f-a432-87d909b97b2a" class="">但是作为一个人呢？张三呢？人确实可以改变他们的名字，婚姻状况，甚至可能性别也可以改变。但是张三去泰国做了手术，那张三还是张三吗？对，张三还是张三。这是因为人与名字不同。人有一个持久的身份。</p><pre id="71e47570-6004-46a1-896d-7dac255d8c55" class="code"><code>class Person:
+    def __init__(self, name: Name):
+        self.name = name
+        
+def test_barry_is_harry():
+    harry = Person(Name(&quot;张三&quot;))
+    barry = harry
+    barry.name = Name(&quot;李四&quot;)
+    assert harry is barry and barry is harr</code></pre><p id="a8724417-6d25-4313-89db-eadfded1fc0d" class="">实体（Entities）不是值， 具有相同的身份。我们可以改变他们的值。但是他们仍然是一样的。在我们的示例中。<code>Batch</code>就是实体。我们可以将一个<code>OrderLine</code>分配给一个Batch。</p><p id="74b0e0de-dcce-4f14-9dff-5e5bd110ca2b" class="">或者我们更改他的ETA ，但是他们仍任相同。</p><p id="a99184cb-53bb-4f19-926d-dff924605dbd" class="">当然我们可以通过修改<code>Batch</code>的魔术方法来实现用数学操作符来更好表达这件事情</p><pre id="307d5b4a-9f27-4f46-902a-1020e16d8460" class="code"><code>class Batch:
+ ...
+    def __eq__(self, other):
+        if not isinstance(other, Batch):
+            return False
+        return other.reference == self.reference
+ def __hash__(self):
+    return hash(self.reference)</code></pre><h2 id="f3a86717-245f-48c1-bc13-1c49d3b1665e" class="">不是所有东西都必须是一个对象</h2><p id="3c84c05b-2244-4feb-b252-7fbdd339edcf" class="">我们刚刚已经建立了一个采购批次的模型，但实际上我还还需要做的是针对我们已经在库存的采购批次来分配订单。这时候我们可能不是需要一个对象，而是需要一个领域服务(domin function)，那么什么叫领域服务呢？Evans在DDD讨论过这个，即：领域服务在实体或值对象中没有自然的归属。现在来看我们的需求，给一组采购批次分配订单。这个事情听起来其实是个函数。那我们就把他变成一个函数。首先我们先看看如何测试这个函数</p><pre id="af4b8c08-935a-4b46-8200-85882fa5cef1" class="code"><code>def test_prefers_current_stock_batches_to_shipments():
+    in_stock_batch = Batch(&quot;in-stock-batch&quot;, &quot;RETRO-CLOCK&quot;, 100, eta=None)
+    shipment_batch = Batch(&quot;shipment-batch&quot;, &quot;RETRO-CLOCK&quot;, 100, eta=tomorrow)
+    line = OrderLine(&quot;oref&quot;, &quot;RETRO-CLOCK&quot;, 10)
+    allocate(line, [in_stock_batch, shipment_batch])
+    assert in_stock_batch.available_quantity == 90
+    assert shipment_batch.available_quantity == 100
+ 
+def test_prefers_earlier_batches():
+    earliest = Batch(&quot;speedy-batch&quot;, &quot;MINIMALIST-SPOON&quot;, 100, eta=today)
+    medium = Batch(&quot;normal-batch&quot;, &quot;MINIMALIST-SPOON&quot;, 100, eta=tomorrow)
+    latest = Batch(&quot;slow-batch&quot;, &quot;MINIMALIST-SPOON&quot;, 100, eta=later)
+    line = OrderLine(&quot;order1&quot;, &quot;MINIMALIST-SPOON&quot;, 10)
+    allocate(line, [medium, earliest, latest])
+    assert earliest.available_quantity == 90
+    assert medium.available_quantity == 100
+    assert latest.available_quantity == 100
+    
+def test_returns_allocated_batch_ref():
+    in_stock_batch = Batch(&quot;in-stock-batch-ref&quot;, &quot;HIGHBROW-POSTER&quot;, 100, eta=None)
+    shipment_batch = Batch(&quot;shipment-batch-ref&quot;, &quot;HIGHBROW-POSTER&quot;, 100, eta=tomorrow)
+    line = OrderLine(&quot;oref&quot;, &quot;HIGHBROW-POSTER&quot;, 10)
+    allocation = allocate(line, [in_stock_batch, shipment_batch])
+    assert allocation == in_stock_batch.reference</code></pre><p id="c43438ac-15ab-4538-b8f9-dfe60a2ccee4" class="">我们的服务函数应该是这样的：</p><pre id="2baf6931-7547-412f-9d41-e9d1e2f9dc53" class="code"><code>def allocate(line: OrderLine, batches: List[Batch]) -&gt; str:
+    batch = next(
+    b for b in sorted(batches) if b.can_allocate(line)
+    )
+    batch.allocate(line)
+    return batch.reference</code></pre><p id="1ee694e7-7ce1-40a2-99a7-62c504b052c1" class="">我们为了能够使sorted工作，我们需要重写我们<code>Batch</code>模型的<code>_gt_</code>魔法方法</p><pre id="ddf32dee-5b92-450b-8d2e-302cd10206a5" class="code"><code>class Batch:
+ ...
+ def __gt__(self, other):
+    if self.eta is None:
+        return False
+    if other.eta is None:
+        return True
+    return self.eta &gt; other.eta</code></pre><p id="1576a122-1035-4d31-bab1-04da932e3104" class="">这样看起来就优雅多了</p><h2 id="5d813264-18fb-4930-989c-ef2acb03102b" class="">异常也能用来领域概念</h2><p id="64b789fe-47b0-4ea0-8e1e-edebfe0e3bff" class="">现在我们还剩下最后一个概念要将：异常也可以用来表达领域概念。我们在与产品经理的沟通中了解到，由于缺货而无法分配订单的可能性，我们可以通过领域异常来捕获这种可能性。我们先写测试</p><pre id="b8d237a9-4759-40ab-a48e-a9a5e481f739" class="code"><code>def test_raises_out_of_stock_exception_if_cannot_allocate():
+    batch = Batch(&#x27;batch1&#x27;, &#x27;SMALL-FORK&#x27;, 10, eta=today)
+    allocate(OrderLine(&#x27;order1&#x27;, &#x27;SMALL-FORK&#x27;, 10), [batch])
+    with pytest.raises(OutOfStock, match=&#x27;SMALL-FORK&#x27;):
+        allocate(OrderLine(&#x27;order2&#x27;, &#x27;SMALL-FORK&#x27;, 1), [batch])</code></pre><p id="f4f0f060-ad86-46f9-b61e-6fe54ba56c15" class="">这里我们必须要提个醒，我们在用语言命名我们异常时要非常谨慎，就像我们命名我们实体值对象和我们领域服务一样。</p><pre id="66b772d5-4a00-468a-acee-b5a7a6ca25ea" class="code"><code>class OutOfStock(Exception):
+    pass
+    
+def allocate(line: OrderLine, batches: List[Batch]) -&gt; str:
+    try:
+        batch = next(
+        ...）
+    except StopIteration:
+        raise OutOfStock(f&#x27;Out of stock for sku {line.sku}&#x27;)</code></pre><h2 id="19fff78e-b7d5-410b-b793-9679747a19a2" class="">结语</h2><p id="0e90e8e8-597c-4d31-8252-a7f33e4e442f" class="">OK，现在为止，我们就可以能够对我们前文当中的模型图例进行一个完整的概念表示了</p><figure id="30755777-0033-4f11-8f49-7219d7cb94d2" class="image"><a href="https://user-gold-cdn.xitu.io/2020/3/2/1709a51fa99d16d1?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"><img src="https://user-gold-cdn.xitu.io/2020/3/2/1709a51fa99d16d1?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"/></a></figure><p id="c80ac313-0d60-4344-b1f9-151db0ff5f14" class="">现在大概可以了我们其实就差一个数据库了。</p><p id="4ba9e2c7-6829-4521-a7e3-4f17a931fd96" class="">我们对本章做一个总结</p><ol id="506eda29-f616-42b2-bd4c-512b0deb76d8" class="numbered-list" start="1"><li>领域建模<p id="79379943-fdc6-4725-9c96-ab2de85f6b76" class="">这是我们代码中最接近业务，最有可能更改的部分。也是我们交付中最有价值的部分。所以我们要让它易于理解和修改</p></li></ol><ol id="01f3c480-1c71-4c36-b3f0-2869ffe177f2" class="numbered-list" start="2"><li>区分实体和值对象<p id="44c0295e-9c24-4797-be45-01d23de57db4" class="">值对象由其属性定义的。他最好作为不可变类型。如果你更改了值对象中的一个属性，那它表示的可能是一个不同的对象。相比之下，一个实体的属性可以随着时间而变化。但仍然是同一个实体。定义唯一标识实体的内容非常重要</p></li></ol><ol id="3e42d375-beb8-465e-b4a4-86f543e20ba7" class="numbered-list" start="3"><li>不是所有东西都必须是一个对象<p id="169e8b0c-9dbd-489c-b727-56fcbd1f6ed9" class="">有些时候，他可能就不是个事情</p></li></ol><ol id="2acca603-02f4-4064-a6b1-1385bf8f44e0" class="numbered-list" start="4"><li>现在是你用到各种OO设计模式最好的时候<p id="4825981e-1bed-4883-b221-24bd6c2d14b0" class="">重新审视以下面向对象的六大基本原则，比如组合大于继承等。</p></li></ol><ol id="48fcaab3-1b4a-45d9-bba8-e175121ba234" class="numbered-list" start="5"><li>你还需要考虑写边界条件等，这个我们后面再讲。</li></ol><p id="bcfa78a7-cb49-416a-a4b3-59464c6bc2c6" class="">
+</p><p id="8106fd18-bf24-435e-a037-e27e7dbf622a" class="">
+</p></div></article></body></html>
