@@ -1,26 +1,22 @@
-name: CI
-
-on:
-  push:
-    branches:
-      - master
+on: [push] # push 代码时触发
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-
+    name: Tencent Cloudbase Github Action Example
     steps:
-      - name: Checkout master
+      - name: Checkout
         uses: actions/checkout@v2
+      
+      # 使用云开发 Github Action 部署
+      - name: Deploy static to Tencent CloudBase
+        id: deployStatic
+        uses: TencentCloudBase/cloudbase-action@v1
         with:
-          ref: master
-
-
-      - name: Upload COS
-        uses: zkqiang/tencent-cos-action@v0.1.0
-        with:
-          args: delete -r -f / && upload -r ./dist/ /
-          secret_id: ${{ secrets.SECRETID }}
-          secret_key: ${{ secrets.SECRETKEY }}
-          bucket: ${{ secrets.BUCKET }}
-          region: ap-chengdu
+         # 云开发的访问密钥 secretId 和 secretKey
+          secretId: ${{ secrets.SECRETID }}
+          secretKey: ${{ secrets.SECRETKEY }}
+          # 云开发的环境id
+          envId: ${{ secrets.ENVID }}
+          # Github 项目静态文件的路径
+          staticSrcPath: ./
