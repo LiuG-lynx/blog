@@ -1,2 +1,2 @@
-## 暂用地址
-http://144.168.58.100:7777/
+## 国内 慢速更新地址
+https://blog-lynx-2gax4xuqf02f3d3a-1252973235.tcloudbaseapp.com/
