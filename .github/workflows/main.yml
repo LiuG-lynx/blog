@@ -3,7 +3,7 @@ on: [push] # push 代码时触发
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    name: Tencent Cloudbase Github Action Example
+    name: Tencent Cloudbase Github Action
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -19,3 +19,4 @@ jobs:
           # 云开发的环境id
           envId: ${{ secrets.ENVID }}
           staticSrcPath: ./
+          staticIgnore: ".git"
