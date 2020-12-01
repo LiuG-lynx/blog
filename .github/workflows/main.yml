@@ -27,7 +27,7 @@ jobs:
         uses: zkqiang/tencent-cos-action@v0.1.0
         with:
           args: delete -r -f / && upload -r ./dist/ /
-          secret_id: ${{ secrets.SECRET_ID }}
-          secret_key: ${{ secrets.SECRET_KEY }}
+          secret_id: ${{ secrets.SECRETID }}
+          secret_key: ${{ secrets.SECRETKEY }}
           bucket: ${{ secrets.BUCKET }}
           region: ap-chengdu
