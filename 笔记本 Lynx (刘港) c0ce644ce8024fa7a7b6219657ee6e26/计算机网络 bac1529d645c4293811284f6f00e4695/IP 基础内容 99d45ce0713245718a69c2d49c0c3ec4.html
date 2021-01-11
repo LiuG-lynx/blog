@@ -1,0 +1,634 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>IP 基础内容</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+.select-value-color-default { background-color: rgba(206,205,202,0.5); }
+.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
+.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
+.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
+.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
+.select-value-color-green { background-color: rgba(0,135,107,0.2); }
+.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
+.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
+.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
+.select-value-color-red { background-color: rgba(255,0,26,0.2); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="99d45ce0-7132-4571-8a69-c2d49c0c3ec4" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/woodcuts_14.jpg" style="object-position:center 60%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">🗻</span></div><h1 class="page-title">IP 基础内容</h1></header><div class="page-body"><p id="d125eb6b-f777-4e52-b62d-393e675f8f6b" class="">
+</p><figure id="27ba2a94-ad72-4b8c-9492-55386784f613" class="image"><a href="IP%20%E5%9F%BA%E7%A1%80%E5%86%85%E5%AE%B9%2099d45ce0713245718a69c2d49c0c3ec4/Untitled.png"><img style="width:1304px" src="IP%20%E5%9F%BA%E7%A1%80%E5%86%85%E5%AE%B9%2099d45ce0713245718a69c2d49c0c3ec4/Untitled.png"/></a></figure><p id="b406d0f1-c639-423a-9ba0-962c96f214a2" class="">C类地址太少 B类地址 又太多</p><p id="f6a43a00-cd7a-41d2-b44e-145d499229a7" class="">D 类 组播地址  属于某个组的机器都能收到 VXLAN 相关</p><h2 id="0c4a52ff-1d48-439f-b1c8-ed8ddb73d3ca" class="">无类型域间选路(CIDR)</h2><p id="844dfc22-6fbc-40a5-ad56-251beb44fb94" class="">32 位的 IP 地址一分为二，前面是网络号，后面是主机号</p><p id="d8bd299e-0857-475e-97ac-a728313c01a5" class="">10.100.122.2/24，这个 IP 地址中有一个斜杠，斜杠后面有个数字 24</p><p id="025439ee-2111-4c4a-9a32-dc404339aca1" class="">后面24 的意思是 32位中 前二十四位是网络号, 后8位是主机号</p><p id="38b0d423-ed88-4414-8980-e72f04a1d8fe" class="">
+</p><p id="61b8f75e-e2e3-447c-a198-b58a1def7d9b" class=""><strong>广播地址 </strong></p><p id="2f66d8e2-fd9f-46f6-8660-fad9005e5adb" class="">10.100.122.255 如果发送这个地址 所有 10.100.122 网络里面的机器都能收到</p><p id="bd8cc173-6ea6-4772-a280-86f2e791dc88" class=""><strong>子网掩码</strong></p><p id="3f2d5566-567f-4363-80cf-0f55810f10c7" class="">子网掩码和 IP 地址进行 AND 计算。前面三个 255，转成二进制都是 1。1 和任何数值取 AND，都是原来数值，因而前三个数不变，为 10.100.122。后面一个 0，转换成二进制是 0，0 和任何数值取 AND，都是 0，因而最后一个数变为 0，合起来就是 10.100.122.0。<strong>这就是网络号。将子网掩码和 IP 地址按位计算 AND，就可得到网络号。</strong></p><p id="46d84614-20fa-46be-acce-518e841485eb" class=""> </p><p id="ab75903d-0a97-41d9-aee7-0322282e2206" class=""><strong>私有办公地址段</strong></p><p id="c1c4657b-29c9-4fca-b1b2-ebc0c4270113" class="">192.168.0.x 最常用 因为 256 设备 /24 基本足够</p><p id="f0b7e9d3-c661-4c1d-884a-e2552484b4cd" class="">192.168.0.1 往往就是出口位置</p><p id="6e28d207-caa4-421f-a568-fc8a5bee0e0a" class="">192.168.0.255 通常是广播地址 往这个地址发送 则整个 192.168.0 网络的所有机器都能收到</p><p id="7c36e143-f87d-4523-af7f-b2056393474c" class="">
+</p><p id="881980d5-f01e-4653-9ad0-76f12693d81b" class=""><strong>lo  loopback 回环接口 在内核处理后直接返回,不会出现在网络中</strong></p><p id="030beac2-3d1e-4b66-b2fc-327256248b85" class="">
+</p><h2 id="7af53e81-3377-43d2-9dbe-94565f7d8ff4" class="">MAC 地址</h2><p id="12e75207-1b89-4a3b-9255-fcce5a13decb" class="">为什么不用 mac 地址</p><p id="a04c28f0-a625-40da-afbf-f8d28ddef036" class=""><strong>一个网络包要从一个地方传到另一个地方，除了要有确定的地址，还需要有定位功能</strong></p><p id="e68c82b7-90d7-4e01-ab77-34f4c05189ba" class="">mac 地址更像是身份证, 是一个唯一的标识</p><p id="958b621d-2a1b-446c-b572-291a767dc237" class="">有一定定位功能, 但很有限</p><p id="eca5940f-e2d7-4e8c-ba55-2942ece2c9e1" class="">从 192.168.0.2/24 访问 192.168.0.3/24 是可以用 MAC 地址的。一旦跨子网，即从 192.168.0.2/24 到 192.168.1.2/24，MAC 地址就不行了，需要 IP 地址起作用了。</p><h2 id="61edd2bb-73fa-40e7-8af7-356dc1b5f47f" class="">网络设备状态标识</h2><p id="432eafcd-5325-4f38-99fe-fd1e0881817d" class="">&lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt;</p><p id="c930add2-2395-4aed-a2c9-ed765c79fbc8" class=""><strong>BROADCAST</strong> 表示这个网卡有广播地址</p><p id="85e3d51f-c134-4c8a-88e1-a327e2f32d6e" class=""><strong>MULTICAST </strong>表示网卡可以发送多播包</p><p id="083db8e3-dde6-45fd-b897-03b5b103cd64" class=""><strong>OWER_UP </strong>表示 L1 是启动的 也即网线插着呢。</p><p id="43bb4ecd-4d09-4a9d-a7bd-eeb2b69f2435" class=""><strong>MTU1500 </strong>是指什么意思呢？是哪一层的概念呢？最大传输单元 MTU 为 1500，这是以太网的默认值。如果放不下就需要分片传输</p><p id="adb811dc-5201-487b-9fa3-040c4e39b2fa" class="">qdisc pfifo_fast 是什么意思呢？qdisc 全称是queueing discipline，中文叫排队规则。内核如果需要通过某个网络接口发送数据包，它都需要按照为这个接口配置的 qdisc（排队规则）把数据包加入队列。</p><p id="b8e707db-33c9-4361-bf4b-7e2843785c00" class="">数据包是按照<strong>服务类型</strong>（Type of Service，TOS）被分配到三个波段（band）里面的。TOS 是 IP 头里面的一个字段，代表了当前的包是高优先级的，还是低优先级的。</p><p id="a37402da-6874-4414-8da5-fd8eaedb867e" class="">
+</p><ul id="acb22221-7ccc-4467-8a0f-3c3119365699" class="bulleted-list"><li>IP 是地址，有定位功能；MAC 是身份证，无定位功能；</li></ul><ul id="383953c3-3d55-4842-84ce-3dd5e833e9ec" class="bulleted-list"><li>CIDR 可以用来判断是不是本地人；</li></ul><ul id="55d093b6-1b6a-4cbb-b0ce-d5f091d594ad" class="bulleted-list"><li>IP 分公有的 IP 和私有的 IP。后面的章节中我会谈到“出国门”，就与这个有关。</li></ul><p id="aad8f08c-ff96-44ff-847c-4fc4907fec87" class="">
+</p><p id="542c7e7a-af6b-469d-88c3-6c8a7197790f" class="">
+</p><p id="da6a6224-67ff-4ea5-bcf5-e9c1721d3593" class="">net-tools  和 iproute2 的内容问题</p><figure id="b09e40b1-eff7-43a8-ba0c-f38489007831"><a href="https://blog.csdn.net/astrotycoon/article/details/52317288" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">linux网络工具iproute2的使用简介_astrotycoon-CSDN博客_iproute2</div><div class="bookmark-description">本文完全是自己在学习 iproute2 的过程中搜集的大杂烩，记录在这里，方便以后自己查询学习，图片都是来自网络，在此表示感谢！ 二、简单了解iproute2工具套装 iproute2是linux下管理控制TCP/IP网络和流量控制的新一代工具包，旨在替代老派的工具链net-tools，即大家比较熟悉的ifconfig，arp，route，netstat等命令。 要说这两套工具本质的区别，应该是net-tools是通过procfs(/proc)和ioctl系统调用去访问和改变内核网络配置，而iproute2则通过netlink套接字接口与内核通讯。 其次，net-tools的用法给人的感觉是比较乱，而iproute2的用户接口相对net-tools来说相对来说，更加直观。比如，各种网络资源（如link、IP地址、路由和隧道等）均使用合适的对象抽象去定义，使得用户可使用一致的语法去管理不同的对象。 所以，net-tools和iproute2都需要去学习掌握了。 iproute2的核心命令是ip: 三、iproute2的典型应用 本小节，我会使用net-tools和iproute2的命令做对比，做到简单明了，分别演示如何去获取、配置和操作系统网络信息。 以下是net-tools和iproute2的大致对比： （一）网络接口相关 （1） 查询所有已连接的网络接口（network interface） 使用net-tools : root@astrol:~# ifconfig -a eth0 Link encap:Ethernet HWaddr 00:0c:29:0d:ce:93 inet addr:192.168.6.138 Bcast:192.168.6.255 Mask:255.255.255.0 inet6 addr: fe80::20c:29ff:fe0d:ce93/64 Scope:Link UP BROADCAST RUNNING MULTICAST MTU:1500 Metric:1 RX packets:202741 errors:1 dropped:3312 overruns:0 frame:0 TX packets:60730 errors:0 dropped:0</div></div><div class="bookmark-href"><img src="https://g.csdnimg.cn/static/logo/favicon32.ico" class="icon bookmark-icon"/>https://blog.csdn.net/astrotycoon/article/details/52317288</div></div><img src="https://img-blog.csdn.net/20160829115808717?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" class="bookmark-image"/></a></figure></div></article></body></html>

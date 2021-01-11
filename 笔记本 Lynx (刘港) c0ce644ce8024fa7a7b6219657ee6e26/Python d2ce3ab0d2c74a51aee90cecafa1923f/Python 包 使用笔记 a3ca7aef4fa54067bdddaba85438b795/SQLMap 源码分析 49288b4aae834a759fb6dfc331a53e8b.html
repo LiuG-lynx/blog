@@ -1,0 +1,698 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>SQLMap 源码分析</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+.select-value-color-default { background-color: rgba(206,205,202,0.5); }
+.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
+.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
+.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
+.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
+.select-value-color-green { background-color: rgba(0,135,107,0.2); }
+.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
+.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
+.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
+.select-value-color-red { background-color: rgba(255,0,26,0.2); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="49288b4a-ae83-4a75-9fb6-dfc331a53e8b" class="page sans"><header><div class="page-header-icon undefined"><span class="icon">🕶️</span></div><h1 class="page-title">SQLMap 源码分析</h1></header><div class="page-body"><p id="228a66d3-273a-4dff-9d92-244e51026703" class="">
+</p><p id="6cfff150-112f-4365-bd89-2b7d50e8833a" class="">
+</p><h3 id="d7611f11-483b-43ed-b44b-db4e80fd9c79" class="">kb </h3><p id="8ab6ab87-4c1e-434a-b92c-36fbd168bb84" class="">存储扫描的各种信息 , 用户全局的各种变量的存储 单例</p><pre id="6484a290-b84f-41c3-9fec-0f3b57174b7d" class="code"><code># lib/core/data.py
+# object to share within function and classes results
+kb = AttribDict()
+# AttribDict   该类定义具有附加功能的字典，以作为属性访问成员</code></pre><p id="7884b140-3ed9-4460-ab63-ee165e61fd6b" class="">
+</p><h3 id="0689b943-a72d-4999-afc9-54b515e5d217" class="">getCurrentThreadData()</h3><p id="f83bf881-04bd-43ac-9481-9ee0efbd2e25" class="">返回当前线程的本地数据</p><pre id="c5e6b1cc-c9b4-49c7-93d9-82055dc6f6a3" class="code"><code># Returns current thread&#x27;s local data</code></pre><p id="78266524-fd18-4d1b-90c8-368397ccaab5" class="">实例化的 _ThreadData 类</p><p id="73b82e86-1db2-4ddb-a8fc-5fc853cc0a39" class="">_ThreadData  表示独立于线程的数据</p><p id="a7050361-68d8-408e-8449-b32985a3e66a" class="">_ThreadData  继承自 <a href="http://threading.local">threading.local</a> </p><pre id="b9ce9a07-590f-441c-8ba3-a8c15cd4fe40" class="code"><code>class local:
+    __slots__ = &#x27;_local__impl&#x27;, &#x27;__dict__&#x27;
+
+    def __new__(cls, *args, **kw):
+        if (args or kw) and (cls.__init__ is object.__init__):
+            raise TypeError(&quot;Initialization arguments are not supported&quot;)
+        self = object.__new__(cls)
+        impl = _localimpl()
+        impl.localargs = (args, kw)
+        impl.locallock = RLock()
+        object.__setattr__(self, &#x27;_local__impl&#x27;, impl)
+        # We need to create the thread dict in anticipation of
+        # __init__ being called, to make sure we don&#x27;t call it
+        # again ourselves.
+        impl.create_dict()
+        return self
+
+    def __getattribute__(self, name):
+        with _patch(self):
+            return object.__getattribute__(self, name)
+
+    def __setattr__(self, name, value):
+        if name == &#x27;__dict__&#x27;:
+            raise AttributeError(
+                &quot;%r object attribute &#x27;__dict__&#x27; is read-only&quot;
+                % self.__class__.__name__)
+        with _patch(self):
+            return object.__setattr__(self, name, value)</code></pre><p id="2cde077c-d482-46d8-95a7-79604b1b28cf" class="">get set 操作类属性的时候都会 加 &#x27;锁&#x27; 线程安全</p><p id="2a6caf73-6315-44c8-aab7-034ee0879c1d" class="">作用是 需要根据前一个运行的结果来判断,然而在多线程中操作变量都需要考虑到 线程冲突的情况 ,ThreadData 用来存储 运行过程中的各种信息,数据</p><p id="98e334c7-4a8a-4446-99b1-d1fa7ffad37f" class="">
+</p><h3 id="c1f9434b-1b55-44ee-8fdd-3f3ef3c634dd" class="">Hashdb </h3><ul id="d8b23332-b56c-42b3-a036-bd37913076aa" class="toggle"><li><details open=""><summary>用于存储注入时候的各种信息,主要封装了 sqlite3 数据库,hashdb 内部读写 封装了一层线程锁</summary></details></li></ul><p id="1e823aad-ff68-44f5-b34c-57d32be522c5" class="">
+</p><p id="580ef23b-c4d4-43b7-afe3-6e1e4b2ee2da" class="">_setHashDB</p><p id="c5df96ed-c059-4991-861a-d35b3fa02200" class="">_resumeHashDBValues()</p><pre id="06d7c157-1ff1-4737-82e3-96835f4bf75e" class="code"><code>def _resumeHashDBValues():
+    &quot;&quot;&quot;
+    Resume stored data values from HashDB
+		从HashDB恢复存储的数据值到 kb
+    &quot;&quot;&quot;
+
+    kb.absFilePaths = hashDBRetrieve(HASHDB_KEYS.KB_ABS_FILE_PATHS, True) or kb.absFilePaths
+    kb.brute.tables = hashDBRetrieve(HASHDB_KEYS.KB_BRUTE_TABLES, True) or kb.brute.tables
+    kb.brute.columns = hashDBRetrieve(HASHDB_KEYS.KB_BRUTE_COLUMNS, True) or kb.brute.columns
+    kb.chars = hashDBRetrieve(HASHDB_KEYS.KB_CHARS, True) or kb.chars
+    kb.dynamicMarkings = hashDBRetrieve(HASHDB_KEYS.KB_DYNAMIC_MARKINGS, True) or kb.dynamicMarkings
+    kb.xpCmdshellAvailable = hashDBRetrieve(HASHDB_KEYS.KB_XP_CMDSHELL_AVAILABLE) or kb.xpCmdshellAvailable
+
+    kb.errorChunkLength = hashDBRetrieve(HASHDB_KEYS.KB_ERROR_CHUNK_LENGTH)
+    if isNumPosStrValue(kb.errorChunkLength):
+        kb.errorChunkLength = int(kb.errorChunkLength)
+    else:
+        kb.errorChunkLength = None
+
+    conf.tmpPath = conf.tmpPath or hashDBRetrieve(HASHDB_KEYS.CONF_TMP_PATH)
+
+    for injection in hashDBRetrieve(HASHDB_KEYS.KB_INJECTIONS, True) or []:
+        if isinstance(injection, InjectionDict) and injection.place in conf.paramDict and injection.parameter in conf.paramDict[injection.place]:
+            if not conf.technique or intersect(conf.technique, injection.data.keys()):
+                if intersect(conf.technique, injection.data.keys()):
+                    injection.data = dict(_ for _ in injection.data.items() if _[0] in conf.technique)
+                if injection not in kb.injections:
+                    kb.injections.append(injection)
+                    kb.vulnHosts.add(conf.hostname)
+
+    _resumeDBMS()
+    _resumeOS()</code></pre><p id="daa2775f-85a6-454a-9c84-34ef3df58356" class="">
+</p><p id="5e1860ef-b439-4b77-a770-c9a5fbf2eef0" class="">
+</p><p id="062dc55f-5f7d-4587-89bf-dfd3d161a9df" class="">
+</p><h3 id="df64a8a2-4263-4af6-b39e-28b84798241b" class="">请求1 </h3><p id="b9459021-c58a-41b9-94e7-f93b041a08a7" class="">检查连接</p><p id="5d0b38dc-3ea1-4660-8d19-926c0f941581" class="">checkConnection()</p><h3 id="3d314c88-a74c-4528-8b88-49d641532e76" class="">请求2</h3><p id="b290ea31-75f3-488d-a90c-8d312e592bd7" class="">检测防火墙</p><p id="be5a7609-171a-4cb2-8159-83d1182cecb9" class="">checkWaf()</p><h3 id="e45ed43e-37b6-4948-94fd-37a613d21438" class="">请求3</h3><p id="96ad47ca-3058-4094-b0e8-c01910e48e12" class="">checkStability()</p><p id="b73e69b8-d685-4d9c-858a-24d0c4e5aebf" class="">检测URL稳定性</p><p id="02c14b48-7eca-4aa5-8094-ac49900e8d3f" class="">此函数检查URL内容是否稳定</p><p id="64033bf4-9004-498f-917e-cbdb5d84d301" class="">相同的页面两次，在每个请求之间有一个小的延迟</p><p id="fac44ba5-91a6-40a8-87a3-38bb0e405bf5" class="">假设它是稳定的。</p><p id="db8db423-cd64-45f4-bdef-aa3e5ffe517b" class="">当请求时，网页内容可能有所不同</p><p id="867e2e1d-2eab-4a49-abfb-e426caca833d" class="">同一页，动态性可能取决于其他参数，</p><p id="9d92872f-63ca-47f2-b0d4-944b4b342636" class="">比如字符串匹配(——string)</p><h3 id="26a198a9-f306-4090-b0a5-f12e77c4201b" class="">请求4</h3><p id="190fafe9-c7f7-43cc-8823-80f80e66874d" class="">checkDynParam</p><p id="d8f2d79d-2092-4810-9ea4-a311c16a6224" class="">检查 参数动态性</p><p id="1eadc410-a196-44c8-892b-06d3c2a4be27" class="">这个函数检查URL参数genCmpPayload否是动态的。如果它是</p><p id="e3d71b45-ba1d-4868-993a-bf1bd0a2949f" class="">动态时，页面的内容不同，否则</p><p id="a45c5308-67be-4ddb-b784-0dcbf0685df1" class="">动态性可能取决于另一个参数。</p><h3 id="27d30e97-4b7f-4e2b-aeb8-b3032e24f1d0" class="">请求5,6</h3><p id="6029d883-d944-4962-9112-d5f3e66ecb20" class="">heuristicCheckSqlInjection()</p><p id="3eca9931-c034-48b9-8424-b30d18cb8ed6" class="">启发式 SQL 注入检测（包括简单的 XSS FI 判断）</p><h2 id="a33bd85c-6eb3-4a08-9429-8807fc57df1f" class="">请求7-20</h2><p id="451fd0d6-25c9-4822-8213-532c0ffbd23d" class="">checkSqlInjection`SQL 注入检测</p><p id="0a1ba8cb-ec97-411d-b54b-c057fd236619" class="">genCmpPayload 函数用于生成boolean类型payload， </p><p id="a6895055-33bf-460f-bd7d-454ab54bca0c" class="">queryPage</p><p id="1905ad7d-2eee-43a6-a32f-448982c0901e" class="">getRatioValue参数</p><p id="3ae41d85-6bc6-4c65-a5e4-b0438f4cb9c6" class="">comparison函数根据getRatioValue参数，返回不同的结果，当getRatioValue为True的时候，返回与原始页面的相似度。</p><p id="3f97d3dc-3163-4df4-acb4-1e747e83a368" class="">
+</p><ol id="88e800db-ae47-4cbd-9700-6dfde913e86d" class="numbered-list" start="1"><li>根据已知参数类型筛选 boundary</li></ol><ol id="4f07d6ed-5b53-4bbc-9584-f5824118e749" class="numbered-list" start="2"><li>启发式检测数据库类型 <code>heuristicCheckDbms</code></li></ol><ol id="613da2e7-f156-47dd-b94b-d0d6ecc8929a" class="numbered-list" start="3"><li>payload 预处理（UNION）</li></ol><ol id="b94d7503-60a4-4b97-9019-eede0ebd63dc" class="numbered-list" start="4"><li>过滤与排除不合适的测试用例</li></ol><ol id="7823b8ee-d42a-443c-a1c7-9cdb0533045d" class="numbered-list" start="5"><li>对筛选出的边界进行遍历与 payload 整合</li></ol><ol id="76bd4085-abcb-483f-a919-e698ee38f201" class="numbered-list" start="6"><li>payload 渲染</li></ol><ol id="ad69bed3-688e-461f-a570-0d8588c5e3d9" class="numbered-list" start="7"><li>针对四种类型的注入分别进行 response 的响应和处理</li></ol><ol id="b8b0f9d5-58dd-4a88-8c27-88b30409841d" class="numbered-list" start="8"><li>得出结果，返回结果</li></ol><p id="a18496ee-3552-4e4e-bf43-f51b103e0cc6" class="">
+</p><p id="0a21488d-e230-405c-8d5c-0035563946ca" class="">checkFalsePositives</p><h3 id="248cce6b-5c49-43fb-b4fc-ecf0993328f4" class="">请求21-29</h3><p id="5c90e581-4e9d-4615-917a-2b586fec9eae" class="">checkDbms</p><p id="355c5b6b-f662-4d4e-a362-9d7f624c6a68" class="">getFingerprint()</p></div></article></body></html>

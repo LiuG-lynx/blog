@@ -1,0 +1,631 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>首部字段</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+.select-value-color-default { background-color: rgba(206,205,202,0.5); }
+.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
+.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
+.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
+.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
+.select-value-color-green { background-color: rgba(0,135,107,0.2); }
+.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
+.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
+.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
+.select-value-color-red { background-color: rgba(255,0,26,0.2); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="b15b1b6f-5e0c-4d9c-9093-5907c8e68255" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/woodcuts_sekka_2.jpg" style="object-position:center 80%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">💵</span></div><h1 class="page-title">首部字段</h1></header><div class="page-body"><p id="294146d3-f73c-414c-8012-f4d4adf7c354" class="">完整的首部字段</p><figure id="84a40181-5cce-4e4f-a403-7d902aa3af69" class="image"><a href="%E9%A6%96%E9%83%A8%E5%AD%97%E6%AE%B5%20b15b1b6f5e0c4d9c90935907c8e68255/Untitled.png"><img style="width:1021px" src="%E9%A6%96%E9%83%A8%E5%AD%97%E6%AE%B5%20b15b1b6f5e0c4d9c90935907c8e68255/Untitled.png"/></a></figure><p id="3cb40729-3e3a-4c34-904a-3b128903e50f" class="">TCP 的报文里是没有源 ip 和目标 ip 的，因为那是 IP 层协议的事情，TCP 层只有源端口和目标端口。</p><p id="66401d9d-7217-4acd-b614-f36b3e5c04da" class="">源 IP、源端口、目标 IP、目标端口构成了 TCP 连接的「四元组」。一个四元组可以唯一标识一个连接。</p><p id="920cfff2-8d7c-47f6-b6ae-7fb33eeeffab" class="">源ip 和目标ip 的 ip 层的协议</p><p id="0e045b24-14fb-46c2-82d2-6451344317cb" class="">
+</p><h2 id="6b2782e9-beaf-4db5-942d-de05f78e5fae" class="">序列号</h2><p id="94ff3f80-e290-4ea3-99be-f0eb52bcd837" class="">TCP 是面向字节流的协议，通过 TCP 传输的字节流的每个字节都分配了序列号，序列号（Sequence number）指的是本报文段第一个字节的序列号。 32位无符号整数</p><p id="3fdb774d-0b59-4b22-83e6-e07becf1e5f3" class="">因为网络层(IP层) 不保证包的顺序, TCP协议利用序列号来解决网络包乱序,重复的问题,</p><p id="71ba1f72-a50d-4a74-b93d-c5f2dd24b31d" class="">SYN报文中 序列号用于交换彼此的初始序列号,其他报文中保证包的顺序</p><h2 id="19194ee8-d161-4209-a6cf-b9cc56e94d8f" class="">初始序列号（Initial Sequence Number, ISN）</h2><p id="868a9857-82ef-4523-9b96-9c096d52a0bc" class="">
+</p><p id="7f517a0c-1fe8-4586-abf2-8510339d1382" class="">在建立连接之初，通信双方都会各自选择一个序列号，称之为初始序列号。在建立连接时，通信双方通过 SYN 报文交换彼此的 ISN，如下图所示</p><figure id="7f8af7dc-af42-4bf6-a63c-eef83279a316" class="image"><a href="https://user-gold-cdn.xitu.io/2019/9/27/16d70264eaa6828c?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"><img src="https://user-gold-cdn.xitu.io/2019/9/27/16d70264eaa6828c?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"/></a></figure><p id="b88f3051-30f0-4ad3-bba1-6b42263aef47" class="">初始建立连接的过程中 SYN 报文交换过程如下图所示</p><figure id="c0073497-b552-4bd3-acca-82d0ff3fe219" class="image"><a href="https://user-gold-cdn.xitu.io/2019/9/27/16d70264ef144241?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"><img src="https://user-gold-cdn.xitu.io/2019/9/27/16d70264ef144241?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"/></a></figure><p id="4a2686c8-374f-476f-9b89-c9e2e086b01d" class="">其中第 2 步和第 3 步可以合并一起，这就是三次握手的过程</p><figure id="2631eb3d-dfd6-4b85-ac66-1fb516ca94f6" class="image"><a href="https://user-gold-cdn.xitu.io/2019/9/27/16d70264f4692792?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"><img src="https://user-gold-cdn.xitu.io/2019/9/27/16d70264f4692792?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"/></a></figure><h2 id="8a3f4da2-daaa-45d1-954e-ecbf50d897f7" class="">确认号（Acknowledgment number, ACK）</h2><p id="66f0a005-8b76-4ab9-bd1c-84deeb88b834" class="">关于确认号有几个注意点：</p><ul id="61264206-95f6-45c4-a870-03c3b41f0f9c" class="bulleted-list"><li>不是所有的包都需要确认的</li></ul><ul id="e44af7f3-1b6c-4b25-8383-57eca03ade8e" class="bulleted-list"><li>不是收到了数据包就立马需要确认的，可以延迟一会再确认</li></ul><ul id="5eddddfd-f04f-4c08-92f9-7a2582a9ac58" class="bulleted-list"><li>ACK 包本身不需要被确认，否则就会无穷无尽死循环了</li></ul><ul id="19372bec-d159-4e52-8941-1f208087e237" class="bulleted-list"><li>确认号永远是表示小于此确认号的字节都已经收到</li></ul><h2 id="f88bd77a-4f7d-4b6e-a815-59c3102aa8d6" class="">TCP Flags</h2><p id="22a1adfa-d3a5-4409-8415-c9d9640c0c37" class="">TCP 有很多种标记，有些用来发起连接同步初始序列号，有些用来确认数据包，还有些用来结束连接。TCP 定义了一个 8 位的字段用来表示 flags，大部分都只用到了后 6 个，如下图所示</p><figure id="22eaaff9-fd59-4fd7-a00d-102fdaa6a611" class="image"><a href="%E9%A6%96%E9%83%A8%E5%AD%97%E6%AE%B5%20b15b1b6f5e0c4d9c90935907c8e68255/Untitled%201.png"><img style="width:1015px" src="%E9%A6%96%E9%83%A8%E5%AD%97%E6%AE%B5%20b15b1b6f5e0c4d9c90935907c8e68255/Untitled%201.png"/></a></figure><p id="15cae2e4-af61-4dec-b1b3-a6896ab63140" class="">通常所说的 SYN、ACK、FIN、RST 其实只是把 flags 对应的 bit 位置为 1 而已，这些标记可以组合使用，比如 SYN+ACK，FIN+ACK 等</p><p id="d63feb2d-0a92-414c-bec1-a7b54cb16cd5" class="">最常见的有下面这几个：</p><ul id="a780d5e5-bcfd-4ba3-a966-ff7f70530221" class="bulleted-list"><li>SYN（Synchronize）：用于发起连接数据包同步双方的初始序列号</li></ul><ul id="ca92ddac-ec48-4cb1-b59a-a095698f5169" class="bulleted-list"><li>ACK（Acknowledge）：确认数据包</li></ul><ul id="d3b881d8-5c9c-4db3-a553-898d810b2ae3" class="bulleted-list"><li>RST（Reset）：这个标记用来强制断开连接，通常是之前建立的连接已经不在了、包不合法、或者实在无能为力处理</li></ul><ul id="f1e0cfff-d48f-46cf-91d8-872b8cb4133f" class="bulleted-list"><li>FIN（Finish）：通知对方我发完了所有数据，准备断开连接，后面我不会再发数据包给你了。</li></ul><ul id="9a0435d0-9a89-4428-a484-515c73b97b14" class="bulleted-list"><li>PSH（Push）：告知对方这些数据包收到以后应该马上交给上层应用，不能缓存起来</li></ul><h1 id="b12463a7-bb16-4034-860f-c59cbcda98ff" class="">窗口大小</h1><figure id="1b1d20fc-4bd9-49b2-9a68-796d3af4dbb5" class="image"><a href="https://user-gold-cdn.xitu.io/2019/9/27/16d70266d82aaebd?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"><img src="https://user-gold-cdn.xitu.io/2019/9/27/16d70266d82aaebd?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"/></a></figure><p id="bd957b5e-d6ef-4371-9ffc-a153d81a736a" class="">可以看到用于表示窗口大小的&quot;Window Size&quot; 只有 16 位，可能 TCP 协议设计者们认为 16 位的窗口大小已经够用了，也就是最大窗口大小是 65535 字节（64KB）。就像网传盖茨曾经说过：“640K内存对于任何人来说都足够了”一样。</p><p id="c9c6a80d-c1bd-42dd-95a4-2915358fd316" class="">自己挖的坑当然要自己填，因此TCP 协议引入了「TCP 窗口缩放」选项 作为窗口缩放的比例因子，比例因子值的范围是 0 ~ 14，其中最小值 0 表示不缩放，最大值 14。比例因子可以将窗口扩大到原来的 2 的 n 次方，比如窗口大小缩放前为 1050，缩放因子为 7，则真正的窗口大小为 1050 * 128 = 134400</p><h1 id="d2975b76-03e4-4528-8447-4a941aeb0913" class="">可选项</h1><figure id="31929005-a9be-474e-b2c5-3f63495375b3" class="image"><a href="https://user-gold-cdn.xitu.io/2019/9/27/16d70266f7d32a0f?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"><img src="https://user-gold-cdn.xitu.io/2019/9/27/16d70266f7d32a0f?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"/></a></figure><p id="fee350a3-dfe1-4075-91a1-3ae0e32bcb91" class="">可选项的格式入下所示</p><figure id="49ab9352-ea60-4257-98be-b9aad4aa27d9" class="image"><a href="https://user-gold-cdn.xitu.io/2019/9/27/16d70266f820427e?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"><img src="https://user-gold-cdn.xitu.io/2019/9/27/16d70266f820427e?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"/></a></figure><p id="77a91cb7-4a6e-46b6-9715-60584003002c" class="">以 MSS 为例，kind=2，length=4，value=1460</p><figure id="bed12fe7-2420-4a7a-9c65-f28528d153ed" class="image"><a href="https://user-gold-cdn.xitu.io/2019/9/27/16d7026733bbfa60?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"><img src="https://user-gold-cdn.xitu.io/2019/9/27/16d7026733bbfa60?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"/></a></figure><p id="2dcda5cd-a2f4-404d-b094-61002dd25475" class="">常用的选项有以下几个：</p><ul id="bc403068-0132-44ce-b024-c32354765389" class="bulleted-list"><li>MSS：最大段大小选项，是 TCP 允许的从对方接收的最大报文段</li></ul><ul id="c93f6966-e45d-4485-9d51-b260b1e5faf3" class="bulleted-list"><li>SACK：选择确认选项</li></ul><ul id="8e2e8c98-16f6-4f11-8a1b-0df6fc4d5704" class="bulleted-list"><li>Window Scale：窗口缩放选项</li></ul><p id="d40bce4e-60ef-4a4f-943a-09ab97b617e9" class="">
+</p><h2 id="0099f306-d9d7-493d-9a48-b48d4e786c2d" class="">作业</h2><p id="e103976c-1155-47c1-9ad7-97002b835f25" class="">1、如果一个 TCP 连接正在传送 5000 字节的数据，第一个字节的序号是 10001，数据被分为 5 段，每个段携带 1000 字节，请问每个段的序号是什么？</p><p id="0d7cb608-0dd9-4dec-a75e-4112d40a2d52" class="">11001-11001-12001-13001-14001</p><p id="86e083a7-fe93-4097-b4a7-fd0f832b0747" class="">
+</p><p id="d91b2aab-4d9e-4b0e-ab8e-4aa83edfdcd5" class="">2、A B 两个主机之间建立了一个 TCP 连接，A 主机发给 B 主机两个 TCP 报文，大小分别是 500 和 300，第一个报文的序列号是 200，那么 B 主机接收两个报文后，返回的确认号是（）</p><ul id="502071d5-ae7f-4cd1-9bd8-28b71f7cee47" class="bulleted-list"><li>A、200</li></ul><ul id="ef1af527-71af-4b99-8bf8-377a72406e0c" class="bulleted-list"><li>B、700</li></ul><ul id="b4018880-632f-4664-b744-44029e946574" class="bulleted-list"><li>C、800</li></ul><ul id="539b7f79-671d-4246-b92d-1638c36a45b6" class="bulleted-list"><li>D、1000</li></ul><p id="d21ce7a0-9f44-4e8f-9b02-1abdf4c30b80" class="">D</p><p id="43abf0b8-702c-4205-a6b2-454bf3a98f2b" class="">3、客户端的使用 ISN=2000 打开一个连接，服务器端使用 ISN=3000 打开一个连接，经过 3 次握手建立连接。连接建立起来以后，假定客户端向服务器发送一段数据Welcome the server!（长度 20 Bytes），而服务器的回答数据Thank you!（长度 10 Bytes ），试画出三次握手和数据传输阶段报文段序列号、确认号的情况。 </p><figure id="b21a2fe7-a7b7-42fb-9078-1d121729511c" class="image"><a href="%E9%A6%96%E9%83%A8%E5%AD%97%E6%AE%B5%20b15b1b6f5e0c4d9c90935907c8e68255/Untitled%202.png"><img style="width:520px" src="%E9%A6%96%E9%83%A8%E5%AD%97%E6%AE%B5%20b15b1b6f5e0c4d9c90935907c8e68255/Untitled%202.png"/></a></figure></div></article></body></html>

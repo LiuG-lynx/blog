@@ -1,0 +1,648 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>K8S网络</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+.select-value-color-default { background-color: rgba(206,205,202,0.5); }
+.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
+.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
+.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
+.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
+.select-value-color-green { background-color: rgba(0,135,107,0.2); }
+.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
+.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
+.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
+.select-value-color-red { background-color: rgba(255,0,26,0.2); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="65e109cb-6eb3-49ca-b6be-abf6688de396" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/met_william_morris_1877_willow.jpg" style="object-position:center 90%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">👔</span></div><h1 class="page-title">K8S网络</h1></header><div class="page-body"><p id="517abd43-9aff-4f2a-9194-76b5820db9e1" class="">Linux 容器能看见的网络栈 都是被隔离在它自己的 network namespace 当中的</p><h3 id="a15dd400-f140-4ecb-8b9b-751312dc7e32" class="">网络栈</h3><ol id="f3955b72-ec40-4fb9-bb3a-6505642dfa38" class="numbered-list" start="1"><li>网卡 network interface</li></ol><ol id="e61cbdf5-b1d9-4ae3-a73b-b911cb71f9d1" class="numbered-list" start="2"><li>回环设备 loopback device</li></ol><ol id="c296c425-0233-490d-ba4d-f230cbfef417" class="numbered-list" start="3"><li>路由表 routing table</li></ol><ol id="ac1c60fb-07fb-4c0a-bf88-3d1f1d775763" class="numbered-list" start="4"><li>iptables 规则</li></ol><p id="17790f9a-d4b0-4485-b181-63cb080ef230" class="">作为一个容器 它可以直接声明使用宿主机的网络栈(-net=host) 即 不开启 network namespace</p><pre id="dfded8e9-0cf8-4fa2-8f69-8abe53b31a7a" class="code"><code>docker run -d -net=host nginx</code></pre><p id="ad031ebd-3a6f-4b03-a2dd-cc5c8e55d94a" class="">这条命令启动的容器会直接监听 宿主机 80端口</p><blockquote id="f47c1345-22bf-4807-a07b-9e7f096ac35a" class="">大多数情况下, 我们希望容器进程能在使用 自己 network namespace 里面的网络栈 即 拥有属于自己的 IP 地址和端口</blockquote><p id="b6025f0d-8a5a-49ea-9432-92cd24c0cfd9" class=""><code>这个被隔离的容器进程,该如何跟其他network namespace 里的容器进行交互呢?</code></p><p id="ef933b33-56a7-438e-80a3-8a61f90c7650" class="">在 linux 中,能够起到虚拟交换机作用的网络设备,是网桥 (bridge) 它是一个工作在 数据链路层的设备, 主要功能是根据mac 地址学习来将数据包转发到网桥的不同端口(Port) 上.</p><p id="ca9d3a5d-0a65-4f42-977e-560e88b718d4" class="">为了实现这一目的 Docker 在宿主机创建 docker0 网桥, 凡是连接在 docker0 网桥上的容器,就可以通过它来进行通信</p><h3 id="9dd49a0d-93e7-4e65-b9d5-8f8fe466720d" class="">Veth Pair 虚拟设备</h3><p id="93eaf06e-f3a0-4f8d-ad72-43add86a686f" class="">它被创建出来后, 总是以两张虚拟网卡(Veth Peer) 的形式成对出现. 并且 从启动一个&quot;网卡&quot; 发出的数据包, 可以直接出现在与它对应的另一张 &quot;网卡&quot; 上,哪怕这两个&quot;网卡&quot;在不同的 network namespace</p><p id="d1d89333-81b8-4f4d-afac-f5db23f08325" class="">容器内部的默认网卡信息</p><figure id="23b11fca-acb4-489b-a3f1-f515a4cf16af" class="image"><a href="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled.png"><img style="width:847px" src="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled.png"/></a></figure><p id="1c25b097-3b5e-4398-bb1b-6dff37fed70d" class="">其中 <code>eth0 的网卡 正是 Veth Pair 设备在容器里的一端</code></p><figure id="948d2641-7c78-470c-88f9-58c287ca7391" class="image"><a href="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled%201.png"><img style="width:946px" src="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled%201.png"/></a></figure><p id="e6872e16-bcdb-46ce-9164-59ce6247d8d5" class="">eth0 网卡是这个容器里的默认路由设备；所有对 172.17.0.0/16 网段的请求，也会被交给 eth0 来处理（第二条 172.17.0.0 路由规则）。</p><p id="eb4ccf5b-04d5-4784-ba78-dcf6f6bb6f57" class="">另一端在宿主机上</p><figure id="1983ad5d-4083-422b-a3d7-1e7553376203" class="image"><a href="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled%202.png"><img style="width:710px" src="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled%202.png"/></a></figure><p id="566c9053-166a-4db6-bafb-7d6361f477a4" class="">这张网卡被插在 docker0 上吗</p><figure id="fb49304d-1a43-4a40-87ad-2828715ce3dd" class="image"><a href="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled%203.png"><img style="width:540px" src="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled%203.png"/></a></figure><h3 id="10400b7f-be84-462a-8ca3-35fb87d5efdb" class="">为什么 172.17 网段的 容器 相互可以连通</h3><p id="b5ab9b24-dc45-406c-83c1-bb500e204333" class="">当网卡插在 docker0 上,会变成该网桥的&quot;从设备&quot;. 从设备会被 剥夺调用网络协议栈处理数据包的资格,降级为 网桥上的一个端口. </p><p id="fdec3472-7aad-404e-981d-9b4e4364e818" class="">docker0 扮演 二层交换机的角色, 将 ARP 广播发到 同被插在 docker0 的虚拟网卡上, 进而实现相互通信</p><figure id="b31f8c18-dbb6-4434-a574-a4b0dc420912" class="image"><a href="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled%204.png"><img style="width:432px" src="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled%204.png"/></a></figure><blockquote id="5e6112e6-2105-459d-b68b-70708eeb6cb1" class="">被限制在 Network Namespace 里的容器进程，实际上是通过 Veth Pair 设备 + 宿主机网桥的方式，实现了跟同其他容器的数据交换。</blockquote><p id="7fef45ba-f316-47e2-a675-2753f7167019" class="">
+</p><figure id="4572e1af-0b5d-43a6-8404-ae74f634baa5" class="image"><a href="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled%205.png"><img style="width:1715px" src="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled%205.png"/></a></figure><p id="c561bd28-7e9c-46cc-b31c-69e1e74f1df0" class="">
+</p><figure id="148ff771-839c-4ee2-82d8-2e854267469c" class="image"><a href="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled%206.png"><img style="width:1834px" src="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled%206.png"/></a></figure><p id="6d1efc50-2ebc-4dd6-98ea-c0ab668ccaa0" class="">
+</p><blockquote id="097cb8e3-6bdd-4d53-bbd6-233ca2f73884" class="">如果容器 连不通外网的时候 , 可以先调试 docker0 网卡 能不能ping 通, 然后查看一下 跟 docker0 和 Veth Pair 设备相关的 iptables 规则是不是异常,往往就能找到问题的答案了</blockquote><p id="f4f08fcb-98eb-4dbd-a42e-376064496e93" class="">
+</p><p id="fb25b9f4-1135-4e1f-9606-c77b6f5be835" class="">
+</p><p id="d5c837a5-0159-412a-8c6c-b21359c0e62e" class="">那么集群网络 也可以通过软件构建一个覆盖在已有宿主机网络之上的, 可以把所有容器连通在一起的虚拟网络</p><h3 id="b72c3eee-fbe2-4321-b27f-b424e5e3a1cd" class="">Overlay Network 覆盖网络</h3><p id="98d186dd-436f-4bed-a5be-fe5db7d0d71c" class="">仅仅通过 某种方式配置宿主机的路由表 就能够把数据包转发到正确的宿主机上.</p><h2 id="1acc3815-afdf-4326-a0b9-9d733e469c2a" class="">跨主机通信</h2><h3 id="2b6a54dd-caf8-464e-b9ea-fb5aad37ae9e" class="">Flannel</h3><p id="d984d12d-5a09-41cb-b0d4-fd9ff76ded8f" class="">CoreOS 主推的 容器网络方案,实际上 Fannel 项目本身只是一个框架, 真正为我们提供容器网络功能的, 是Flannel 的后端实现</p><ol id="8617bc9e-a600-40a3-99ac-323e86d96a50" class="numbered-list" start="1"><li>VXLAN</li></ol><ol id="9e3ff5d4-4810-47e6-a28d-a31cad8905d6" class="numbered-list" start="2"><li>host-gw</li></ol><ol id="1bec2a53-9eb0-448b-bd78-8c7eb78557f2" class="numbered-list" start="3"><li>UDP</li></ol><h3 id="950115f7-145c-4c97-b454-26106ad97ecd" class="">1. UDP</h3><p id="6d01046e-85a6-4dd6-996f-72b93f84d1b5" class="">最早支持,却是性能最差,已被废弃. 最简单的方式 </p><ul id="f52da305-720a-46b2-9a2d-75e9482b8581" class="bulleted-list"><li>宿主机 Node 1 上有一个容器 container-1，它的 IP 地址是 100.96.1.2，对应的 docker0 网桥的地址是：100.96.1.1/24。</li></ul><ul id="1a325aa8-7b2b-43c3-adae-4e3826004d9b" class="bulleted-list"><li>宿主机 Node 2 上有一个容器 container-2，它的 IP 地址是 100.96.2.3，对应的 docker0 网桥的地址是：100.96.2.1/24。</li></ul><p id="b87c252c-d238-4882-a7b6-6b249732bbff" class="">Flannel 在宿主机创建一系列的路由信息</p><pre id="2f9f74ce-1785-47ad-a57f-e1ead206a42b" class="code"><code># 在 Node 1 上
+$ ip route
+default via 10.168.0.1 dev eth0
+100.96.0.0/16 dev flannel0  proto kernel  scope link  src 100.96.1.0
+100.96.1.0/24 dev docker0  proto kernel  scope link  src 100.96.1.1
+10.168.0.0/24 dev eth0  proto kernel  scope link  src 10.168.0.2</code></pre><p id="3e3ba7dc-47b3-42f9-87c6-73dee7f0ed9c" class="">IP包 目的地址是 100.96.2.3,本机的docker0 网桥是无法匹配的 对应的网段是 100.96.1.0 ,只能匹配到 flannel0 </p><h3 id="c44b6e8e-4a0a-4e35-ac0d-c8861875faa1" class="">Flannel0 是 TUN 设备 隧道设备</h3><p id="f8c46ed1-7150-4d79-b0a8-a0be00ef6294" class="">TUN 设备是一个工作在三层 的虚拟网络设备</p><p id="6e931e4d-23ce-4a98-983e-3ffd83bf7144" class="">在操作系统内核和用户应用程序之间传递 IP 包</p><p id="ce48ebf0-b627-4b6f-ab5f-e47144c4562e" class="">操作系统将IP 包发给 flannel0 后 会将 ip 包交给 Flannel 进程</p><p id="cf624c7c-6ebb-42ed-97a5-0df75eb50d7e" class=""><code>内核态</code> &gt; <code>用户态</code> 的流动方向</p><p id="556c8754-fc4b-41f6-b3a2-721248130ce4" class="">反之 如果是 flannel 进程(flanneld 每个宿主机都会创建的主进程)将 ip 包发给 flannel0  ,那么宿主机路由表会进行下一步处理, 这是一个</p><p id="c8afb0e9-2b0b-4b16-95ac-edede9128487" class=""><code>用户</code> &gt; <code>内核态</code> 的流动方向</p><h3 id="775d2e7b-e8b4-4509-bc54-75fe6841ea27" class="">flanneld 如何找到 node2 </h3><p id="8ddaf212-f1be-4bbb-9494-1095a6a209ff" class="">每个宿主机的 容器被分到 该宿主机有 flannel 创建的 子网中</p><p id="79b1b782-fcff-42fa-86c9-5b1422255d45" class="">flanneld 进程寻址时 从 etcd 中获取 对应 node2 的宿主机子网</p><pre id="ab1c35d1-58f7-4f7d-a09a-0c5f347598c2" class="code"><code>$ etcdctl get /coreos.com/network/subnets/100.96.2.0-24
+{&quot;PublicIP&quot;:&quot;10.168.0.3&quot;}</code></pre><p id="8a5ddbae-37f8-4bb7-8f7e-95a521158fbd" class="">每个 宿主机 flanneld 都会监听 8285 端口 所以 </p><p id="cf3eb021-bd12-4958-ad91-0675e511d58b" class="block-color-blue">flanneld 会直接把这个 IP 包发送给它所管理的 TUN 设备，即 flannel0 设备。</p><p id="b0a27d31-c4ce-4708-8742-f483c6dfdd9b" class="">要实现上述流程有一个重要的前提  docker0 网桥的地址范围必须是 Flannel 为宿主机分配的子网</p><p id="cd80ebd3-0d36-47ee-bf83-7cbfc684fdf0" class="">可以用以下配置解决</p><pre id="a860f0cd-d92d-4eb8-8742-24ebd2fb4386" class="code"><code>$ FLANNEL_SUBNET=100.96.1.1/24
+$ dockerd --bip=$FLANNEL_SUBNET ...</code></pre><figure id="b6e79620-9a2b-49a2-9fad-2b4ea81ca56b" class="image"><a href="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled%207.png"><img style="width:1857px" src="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled%207.png"/></a></figure><p id="3a8fd18a-511c-4777-929d-aea42f49c041" class="">
+</p><h2 id="05250e57-4237-4a8c-b2d5-658914ab81f5" class="">UPD 模式的严重缺陷</h2><p id="85022e0e-e245-4497-992c-b48b44076c4a" class="">flanneld 进程要 处理 所以要经过 三次用户态与内核态之间的数据拷贝</p><figure id="2d6dc193-97a5-4e98-b73a-092939f2a303" class="image"><a href="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled%208.png"><img style="width:890px" src="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled%208.png"/></a></figure><p id="8c354a0e-5685-401a-9a93-3c85b8dc5d0a" class="">
+</p><p id="4d12d714-be7d-446d-9c94-3cf803925aea" class="">第一次：用户态的容器进程发出的 IP 包经过 docker0 网桥进入内核态；</p><p id="c801dbc6-6bf4-4f7e-8bec-24da9ec35051" class="">第二次：IP 包根据路由表进入 TUN（flannel0）设备，从而回到用户态的 flanneld 进程；</p><p id="166b41aa-5651-47b6-b802-a4957a2847b6" class="">第三次：flanneld 进行 UDP 封包之后重新进入内核态，将 UDP 包通过宿主机的 eth0 发出去。</p><p id="be54debe-75a2-4e78-aee0-939f6e684cf9" class="">
+</p><p id="74df5509-ef36-47ab-bd52-ec7303bf424e" class="">Flannel 进行 UDP 封装 解封装 的过程 都是用户态来完成的,代价比较高 </p><h2 id="f2f4eced-719b-4582-bab8-7f839a164f19" class="">减少用户态与内核态之间切换的次数, 核心处理逻辑都放在内核态进行</h2><h3 id="d158a332-8b21-4e88-a85b-1aeedfda0346" class="">VXLAN 主流的容器网络</h3><p id="800165f5-809d-45a0-b4c0-ae7856bedd27" class="">VXLAN，即 Virtual Extensible LAN（虚拟可扩展局域网），是 Linux 内核本身就支持的一种网络虚似化技术。所以说，VXLAN 可以完全在内核态实现上述封装和解封装的工作，从而通过与前面相似的“隧道”机制，构建出覆盖网络（Overlay Network）。</p><h3 id="cd4b3548-bdd3-4a5a-a8e9-b9677407ca99" class="">VXLAN  设计思想</h3><p id="da00cb64-18ae-4bb8-a746-15a82afa17e1" class="">在现有的 三层网络之上 ,由 内核 VXLAN 模块维护 二层网络,使得连接在这个VXLAN 二层网络的 主机(虚拟机或者容器)都可以像在一个局域网里那样通信, 实际上,这些主机可能分布在不同的宿主机上</p><p id="cf630569-978a-4e43-b349-eaca15f9b28a" class="">而为了能够在二层网络上打通“隧道”，VXLAN 会在宿主机上设置一个特殊的网络设备作为“隧道”的两端。这个设备就叫作 VTEP，即：VXLAN Tunnel End Point（虚拟隧道端点）。</p><p id="31cb9747-7359-4c50-bec1-16cb4f946500" class="">而 VTEP 设备的作用，其实跟前面的 flanneld 进程非常相似。只不过，它进行封装和解封装的对象，是二层数据帧（Ethernet frame）；而且这个工作的执行流程，全部是在内核里完成的（因为 VXLAN 本身就是 Linux 内核中的一个模块）。</p><p id="a1b47c91-714d-4e69-9f92-4c6f77562b77" class="">
+</p><figure id="43e2e67b-f0e1-44d3-aae7-754b77ba59ab" class="image"><a href="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled%209.png"><img style="width:1767px" src="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/Untitled%209.png"/></a></figure><p id="1be591ee-a591-4456-b8c4-86589f6c6bb5" class="">如今的节点信息都是有 路由来维护的 不再使用  etcd</p><pre id="04ee25e1-2980-45b8-b5f3-9e5311612b5c" class="code"><code>$ route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+...
+10.1.16.0       10.1.16.0       255.255.255.0   UG    0      0        0 flannel.1</code></pre><blockquote id="2be29ac4-7520-49bd-b68b-adee955c1ac2" class="">每台节点启动时把它的 VTEP 设备对应的 ARP 记录，直接下放到其他每台宿主机上。</blockquote><h3 id="b2f9b2e2-0371-447b-ac85-6383140a990b" class="">Kubernetes 的网桥 CNI</h3><p id="d3a2e9fb-c43c-4d62-8b78-60a7783b6770" class="">以 Flannel 的 VXLAN 模式为例，在 Kubernetes 环境里，它的工作方式会从 docker0 网桥 被替换为 CNI 网桥</p><p id="f7e18ec9-8e12-404b-9a42-db73d0142fec" class="">自建docker 容器不会改变 依旧使用 docker0</p><p id="361ebaca-179f-4da6-ba4a-1e765235b45a" class="">CNI 为 kubernetes 专属网桥</p><p id="c0cf3077-3262-40bf-aec7-87b69b077be8" class="">
+</p><p id="f8a13d82-70a3-4273-949d-a830b8ec2787" class="">Kubernetes 之所以要设置这样一个与 docker0 网桥功能几乎一样的 CNI 网桥，主要原因包括两个方面：</p><ul id="eca46b24-0d47-48f8-9d3a-e47f6653500a" class="bulleted-list"><li>一方面，Kubernetes 项目并没有使用 Docker 的网络模型（CNM），所以它并不希望、也不具备配置 docker0 网桥的能力；</li></ul><ul id="06236598-90f3-4d31-aea8-1705f27de27a" class="bulleted-list"><li>另一方面，这还与 Kubernetes 如何配置 Pod，也就是 Infra 容器的 Network Namespace 密切相关。</li></ul><figure id="10c261b4-1e67-4739-9251-fa067b1c659d" class="link-to-page"><a href="K8S%E7%BD%91%E7%BB%9C%2065e109cb6eb349cab6beabf6688de396/%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81pod%2010c261b41e6747399251fa067b1c659d.html"><span class="icon">🎑</span>为什么我们需要pod</a></figure></div></article></body></html>

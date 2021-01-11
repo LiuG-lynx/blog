@@ -1,0 +1,637 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Numpy</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, YuMincho, "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "Songti TC", "Songti SC", "SimSun", "Nanum Myeongjo", NanumMyeongjo, Batang, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+	fill: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+	fill: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+	fill: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+	fill: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+	fill: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+	fill: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+	fill: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+	fill: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+	fill: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+.select-value-color-default { background-color: rgba(206,205,202,0.5); }
+.select-value-color-gray { background-color: rgba(155,154,151, 0.4); }
+.select-value-color-brown { background-color: rgba(140,46,0,0.2); }
+.select-value-color-orange { background-color: rgba(245,93,0,0.2); }
+.select-value-color-yellow { background-color: rgba(233,168,0,0.2); }
+.select-value-color-green { background-color: rgba(0,135,107,0.2); }
+.select-value-color-blue { background-color: rgba(0,120,223,0.2); }
+.select-value-color-purple { background-color: rgba(103,36,222,0.2); }
+.select-value-color-pink { background-color: rgba(221,0,129,0.2); }
+.select-value-color-red { background-color: rgba(255,0,26,0.2); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="c8e6e5de-92a2-4182-90d6-65d1f63259a9" class="page sans"><header><img class="page-cover-image" src="https://www.notion.so/images/page-cover/met_william_morris_1878.jpg" style="object-position:center 0%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">🎐</span></div><h1 class="page-title">Numpy</h1></header><div class="page-body"><p id="52cf1238-ef3b-49cc-bcb4-240d19b99bc4" class="">避免采用隐式拷贝,而是采用就地操作的方式</p><pre id="3d899a4e-7be1-4353-a2d1-b57eea14e944" class="code"><code>x*=2 比  y=x*2 快得多</code></pre><p id="e6cb5923-b69d-4b61-9a19-200fd4c8880c" class="">
+</p><blockquote id="2db26b64-3508-43f7-b1ed-50fdb67beeed" class="">NumPy 重要对象 : `ndarray`  和 `ufunc`</blockquote><p id="66c0a002-7a77-4bbb-ae6e-18f76b4043b8" class=""> </p><h3 id="67346429-f1c6-4f54-bc26-60f1d3936173" class="">ndarray 对象</h3><p id="b68a8a63-daef-4b86-adcb-5e356ad0e121" class="">ndarray 实际上是多维数组的概念</p><p id="a7d5afd9-aed4-4aa4-8acb-9f722a174a57" class="">在 numpy 数组中 维数为 rank 秩 , 一维  秩 为1 , 二维秩为2</p><p id="830ade4b-c1e3-4021-b833-dabe00aca8db" class="">用array中指定了结构数组的类型dtype=persontype 可以指定每个元素的 结构类型</p><p id="661ef95b-71df-474a-a04a-909927d24dd7" class="">
+</p><figure id="57b798ea-9e19-4208-aa75-510727291e39" class="image"><a href="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled.png"><img style="width:853px" src="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled.png"/></a></figure><blockquote id="a3dd593d-677e-484a-a228-d6d8f38bab54" class="">在C语言里，可以定义结构数组，也就是通过struct定义结构类型，结构中的字段占据连续的内存空间，每个结构体占用的内存大小都相同</blockquote><h3 id="8c84c47b-2bd3-42ac-a4a0-5f4bcd0e8a7f" class="">ufunc 运算</h3><p id="90868678-4825-44b2-abb0-82abbc842e2f" class="">ufunc 运算速度非常快,都是采用C语言来实现的</p><p id="d6d66132-eab1-43dc-9a45-da0d18c2028a" class="">
+</p><p id="184bdca1-1df3-41ee-abcb-c5f0368223c5" class=""><strong>连续数组创建</strong></p><p id="5e60c3eb-d255-4e0d-aa91-5309c0c6313f" class="">np.arange 和 np.linspace 起到的作用是一样的 </p><ul id="d77283ec-9309-4499-b019-5537351b7edb" class="bulleted-list"><li>arange 类似内置函数 range() 通过初始值,终值 , 步长来创建等差数列,默认不包括终值</li></ul><ul id="b7ff75ed-46f0-437d-800d-6ef6d2b97e8f" class="bulleted-list"><li>linspace 代表线性等分向量的含义 通过指定初始值、终值、元素个数来创建等差数列的一维数组，默认是包括终值的。</li></ul><figure id="4cd2184b-3b3c-4d4e-aff0-50648daf2473" class="image"><a href="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%201.png"><img style="width:644px" src="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%201.png"/></a></figure><p id="2cfe81f5-7c94-4ba5-a6c3-7243e72a7a99" class=""><strong>算数运算</strong></p><blockquote id="2b31e5f6-3adc-448c-a137-5ad6cc8a52b4" class="">在求余函数中 np.remainder 与 np.mod 结果一样</blockquote><figure id="4aa4f37a-b0bc-418f-b482-208f00318d2b" class="image"><a href="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%202.png"><img style="width:734px" src="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%202.png"/></a></figure><p id="ab2ac2ff-d97b-4793-91c2-734829e1a9bb" class=""><strong>统计函数</strong></p><blockquote id="2b6148e7-60f6-4b32-9624-7e83ad1514cd" class="">求矩阵中最大值函数 amax() 最小值函数 amin()</blockquote><p id="a8b2e1e6-d413-4aa9-94ef-653a30963233" class=""><em>其中第二个参数是轴 axis</em></p><p id="11ba723b-2b7d-4b84-abf1-403a75e919c3" class="">axis=0 是跨行（纵向），axis=1 是跨列（横向）</p><p id="4f2844a9-06be-4079-849f-6f5ae1dc483e" class=""><em>axis=0轴是把元素看成了[1,4,7], [2,5,8], [3,6,9]三个元素</em></p><p id="eac47354-af33-4d6c-beef-0ca6fa25ad62" class=""><em>axis=1轴是把元素看成了[1,2,3], [4,5,6], [7,8,9]三个元素</em></p><figure id="9974ad09-4902-4ee7-b704-e9426f2025ad" class="image"><a href="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%203.png"><img style="width:651px" src="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%203.png"/></a></figure><p id="e44d600a-d0a2-4830-8ebc-38ee39a4085d" class=""><strong>统计最大值与最小值之差 ptp()</strong></p><p id="19feb6c9-7c17-4023-a325-025e58a723cf" class="">
+</p><figure id="51689c12-d1b2-433b-a4dd-f558ed452574" class="image"><a href="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%204.png"><img style="width:578px" src="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%204.png"/></a></figure><p id="d8e40aef-c857-4ef6-b2e2-7e3f10e6d83c" class=""><strong>统计数组的百分位数  percentile()</strong></p><blockquote id="c7391369-83b5-4967-8c96-0b96bb0e5a5e" class="">50 百分位数  取值在 0-100 之间 为0 则求最小值 为100 求最大值</blockquote><p id="b6fe3161-80b8-408e-b3df-01561b34c97f" class="">
+</p><figure id="f01dcf95-99c4-438b-b755-31365f6b6a17" class="image"><a href="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%205.png"><img style="width:485px" src="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%205.png"/></a></figure><p id="c7b9a0c9-d221-4d5f-b9e6-3b23a73d4a0c" class=""><strong>统计数组中的中位数 median(),平均数 mean()</strong></p><p id="1a7fe35f-af56-49d4-9461-0fc4281e1450" class="">
+</p><figure id="6f22c950-5876-4d43-899b-848fb044ef23" class="image"><a href="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%206.png"><img style="width:446px" src="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%206.png"/></a></figure><p id="b53de032-c96a-4a51-ac47-81fcac44e3b1" class=""><strong>统计数组中的加权平均值average()</strong></p><p id="6ed69d75-689e-493a-8ffe-a2bdc4b265c9" class=""><em>np.average(a,weights=wts)=(1*1+2*2+3*3+4*4)/(1+2+3+4)=3.0</em></p><figure id="120968fc-70f8-42d0-885e-2148acefc5a4" class="image"><a href="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%207.png"><img style="width:705px" src="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%207.png"/></a></figure><p id="2cf7bb55-88ae-43c5-920c-8df63f2620e5" class=""><strong>统计数组中的标准差std()、方差var()</strong></p><blockquote id="7c51e7e9-c2d9-4ab7-b718-8761b0511daa" class="">方差的计算是指每个数值与平均值之差的平方求和的平均值，即mean((x - x.mean())** 2)。标准差是方差的算术平方根。在数学意义上，代表的是一组数据离平均值的分散程度。</blockquote><figure id="6e22beb5-ec62-4ac8-8443-73924801f3a2" class="image"><a href="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%208.png"><img style="width:515px" src="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%208.png"/></a></figure><h3 id="4d313b85-5a16-41aa-b8e2-66bb6a754b66" class="">Numpy 排序</h3><p id="6bc36544-3859-4f25-8977-dc8b40d862b5" class="">sort 函数 </p><p id="0cf8d792-87e5-483b-a02c-9e64e0ef8a45" class="">sort(a, axis=-1, kind=‘quicksort’, order=None) </p><p id="d2b0636f-ff4d-46ef-afef-aaa152fe279e" class=""><em>axis=None代表采用扁平化的方式作为一个向量进行排序</em></p><p id="f6256b4a-376b-47d5-903a-c456f621a02d" class=""><em>默认模式 kind 快速排序</em></p><p id="f2201de3-6b4e-4e2c-a6bf-77379d9affb3" class=""><strong>kind参数</strong></p><blockquote id="49ace13f-3891-4378-a9c1-f74c31459e21" class="">quicksort、mergesort、heapsort 快速排序、合并排序、堆排序</blockquote><p id="0dd93deb-b85b-40e2-8f06-ab5fb4218089" class=""><em>order字段，对于结构化的数组可以指定按照某个字段进行排序。</em></p><p id="6e982e25-f55a-4a11-91db-f1f5bc194152" class="">
+</p><figure id="b785e205-85a1-428f-9871-715c2f3dc77a" class="image"><a href="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%209.png"><img style="width:680px" src="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%209.png"/></a></figure><h3 id="52b0b779-e234-489a-88d5-36c15a797d97" class="">总结</h3><p id="123d83ce-36f9-4794-8a25-711bfe1ff32d" class="">
+</p><figure id="5af4e91a-a045-4db2-a890-c79d5b374dff" class="image"><a href="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%2010.png"><img style="width:1142px" src="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%2010.png"/></a></figure><p id="bbcece23-58a2-4991-b36c-462e07d47495" class=""><strong>统计全班的成绩</strong></p><p id="64c5e772-a7df-4dcc-82a6-bb600e1052c5" class="">假设一个团队里有5名学员，成绩如下表所示。你可以用NumPy统计下这些人在语文、英语、数学中的平均成绩、最小成绩、最大成绩、方差、标准差。然后把这些人的总成绩排序，得出名次进行成绩输出。</p><p id="3c513895-ca94-416f-b8f1-c9f6c6b49e78" class="">
+</p><figure id="99423f9b-6e2e-4f19-9fd9-b82697a848a1" class="image"><a href="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%2011.png"><img style="width:1142px" src="Numpy%20c8e6e5de92a2418290d665d1f63259a9/Untitled%2011.png"/></a></figure><p id="62f58cd6-e7aa-4f5d-8feb-588f18562dcf" class="">
+</p></div></article></body></html>
